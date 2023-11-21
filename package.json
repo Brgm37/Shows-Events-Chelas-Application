@@ -1,10 +1,11 @@
 {
   "name": "seca-ipw-p1-leic2223i-ipw33d-g30",
-  "version": "1.0.0",
+  "version": "1.0.0", 
+  "type": "module",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests/**/*.test.mjs"
   },
   "repository": {
     "type": "git",
