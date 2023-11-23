@@ -4,7 +4,7 @@ import secaWebApi from './seca-web-api.mjs';
 const app = express();
 const port = process.env.PORT || 3000;
 
-secaWebApi(app);
+secaWebApi(app);                //cria servidor
 
 // Set up a basic route for testing
 app.get('/', (req, res) => {

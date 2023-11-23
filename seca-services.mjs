@@ -1,5 +1,5 @@
-import tmEventsData from "./tm-events-data.mjs";
-import secaDataMem from "./seca-data-mem.mjs";
+import tmEventsData from './tm-events-data.mjs';
+//import secaDataMem from './seca-data-mem.mjs';
 
 const secaServices = {
     async getPopularEvents(req, res){
