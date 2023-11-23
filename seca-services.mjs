@@ -22,7 +22,7 @@ const secaServices = {
     },
     async searchEvents(req, res){
         try{
-            const eventName = req.query.name;
+            const eventName = req.params.eventName;
             if (!eventName)
                 return res.status(400).json({error: 'Name parameter is required for event search'});
             const popularEventData = await tmEventsData.fetchEventByName(eventName);
@@ -52,7 +52,7 @@ const secaServices = {
     },
     async getGroup(req, res){
         try{
-            const groupName = req.query.name;
+            const groupName = req.params.groupId;
             if (!groupName)
                 return res.status(400).json({error: 'Name parameter is required for group search'});
             const group = await secaDataMem.getGroup(req);
