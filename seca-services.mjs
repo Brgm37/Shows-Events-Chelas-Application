@@ -4,17 +4,8 @@ import tmEventsData from './tm-events-data.mjs';
 const secaServices = {
     async getPopularEvents(req, res){
        try{
-        const popularEventData = await tmEventsData.fetchPopularEvent();
-        const formattedEvents = popularEventData.map(event => (
-            {
-                name: event.name,
-                date: event.date,
-                segment: event.segment || 'N/A',
-                genre: event.genre || 'N/A',
-            }
-        ));
-
-        res.json(formattedEvents);
+        let popularEventData = await tmEventsData.fetchPopularEvent();
+        return res.status(200).json(popularEventData);
        }catch(error){
         console.error('Error fetching popular events:', error);
         res.status(500).json({error: 'Internal server Error'})
@@ -22,19 +13,11 @@ const secaServices = {
     },
     async searchEvents(req, res){
         try{
-            const eventName = req.query.name;
+            const eventName = req.query.eventName;
             if (!eventName)
                 return res.status(400).json({error: 'Name parameter is required for event search'});
             const popularEventData = await tmEventsData.fetchEventByName(eventName);
-            const formattedEvents = popularEventData.map(event => (
-                {
-                    name: event.name,
-                    date: event.date,
-                    segment: event.segment || 'N/A',
-                    genre: event.genre || 'N/A',
-                }
-            ));
-
+            return filter(await response.json());
             res.json(formattedEvents);
        }catch(error){
         console.error('Error fetching popular events:', error);
@@ -52,14 +35,32 @@ const secaServices = {
     },
     async getGroup(req, res){
         try{
-            const groupName = req.query.name;
+            const groupName = req.params.groupId;
             if (!groupName)
                 return res.status(400).json({error: 'Name parameter is required for group search'});
             const group = await secaDataMem.getGroup(req);
             res.json(group);
         }catch(error){
             console.error('Error geting the group:', error);
-            res.status(500).json({error: 'Internal server Erro'})
+            res.status(500).json({error: 'Internal server Error'})
+        }
+    },
+    async postGroup(req, res){
+        try{
+            const {name , description} = req.body
+
+            if (!name || !description){
+                return res.status(400).json({error: 'Name parameter and description are required'});
+            }
+
+            const postGroup = secaDataMem.createGroup(name, description);
+
+            secaDataMem.storeGroup(postGroup);
+
+            res.status(201).json({ message: 'Group created successfully.', group: postGroup });
+        }catch(error){
+            console.error('Error processing the post request', error);
+        res.status(500).json({error: 'Interna server error'});
         }
     }
 };
