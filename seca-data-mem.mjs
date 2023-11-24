@@ -19,9 +19,12 @@ const secaDataMem = {
         groupsMap.set(group.id, group);
     },
 
-    getGroups: (user) => {
+    allGroups: (user) => {
         // Return an array of all groups in the Map
         return [...groupsMap.values()];
+    },
+    getGroup: (name) => {
+        return groupsMap.get(name)
     },
 };
 

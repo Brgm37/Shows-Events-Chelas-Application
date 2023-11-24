@@ -22,9 +22,12 @@ const tmEventsData = {
         const apiURL = `https://app.ticketmaster.com/discovery/v2/events/?keyword=${eventName}&size=30&page=1&apikey=${apiKey}`;
         try{
             const response = await fetch(apiURL);
-            if(!response.ok)
-                throw new Error('Error fetching event whit the name ', eventName);
-            return filter(await response.json())
+            if(!response.ok){
+                throw new Error('Error fetching event with the name ', eventName);
+            }
+            else{
+                return filter(await response.json())
+            }
         }catch(error){
             throw error;
         }
