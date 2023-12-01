@@ -4,18 +4,14 @@ const apiKey = '1VzEYuN3kBDwTrV7yQGRuRngZdfkmhKH';
 
 const tmEventsData = {
     async fetchPopularEvent(s, p){
-        let size;
-        let page;
-        if(s === null){size = 30} else {size = s};
-        if(p === null){page = 1} else {page = p};
-        const apiURL = `https://app.ticketmaster.com/discovery/v2/events/?sort=relevance,desc&size=${size}&page=${page}&apikey=${apiKey}`;
+        const apiURL = `https://app.ticketmaster.com/discovery/v2/events/?sort=relevance,desc&size=${s}&page=${p}&apikey=${apiKey}`;
         try{
             const response = await fetch(apiURL);
             if (response.ok){
                 return filter(await response.json());
             }
             else{
-                throw new Error('Internal server error') 
+                throw new Error('Internal server error'); 
             }
         }catch(error){
             throw error;
@@ -23,10 +19,6 @@ const tmEventsData = {
     },
 
     async fetchEventByName(eventName, s, p){
-        let size;
-        let page;
-        if(s === null){size = 30} else {size = s};
-        if(p === null){page = 1} else {page = p};
         const apiURL = `https://app.ticketmaster.com/discovery/v2/events/?keyword=${eventName}&size=${s}&page=${p}&apikey=${apiKey}`;
         try{
             const response = await fetch(apiURL);
@@ -34,7 +26,21 @@ const tmEventsData = {
                 throw new Error('Error fetching event with the name ', eventName);
             }
             else{
-                return filter(await response.json(), eventName)
+                return filter(await response.json());
+            }
+        }catch(error){
+            throw error;
+        }
+    },
+    async fetchEventById(eventId){
+        const apiURL = `https://app.ticketmaster.com/discovery/v2/events/${eventId}.json?apikey=${apiKey}`;
+        try{
+            const response = await fetch(apiURL);
+            if (!response.ok){
+                throw new Error('Error fetching event with ID', eventId);
+            }
+            else{
+                return formatData(await response.json());
             }
         }catch(error){
             throw error;
@@ -42,20 +48,26 @@ const tmEventsData = {
     }
 }
 
+function formatData(data){
+    return {
+        id : data.id,
+        name : data.name,
+        date : data.date,
+        segment : data.classifications[0].segment || 'N/A',
+        genre : data.classifications[0].genre || 'N/A',
+    }
+}
 
 function filter(response){
-    let event = [];
-    response._embedded.events.forEach(element => {
-        let obj = {
+    return response._embedded.events.map(element => {
+        return {
             id : element.id,
             name : element.name,
             date : element.date,
             segment : element.classifications[0].segment || 'N/A',
             genre : element.classifications[0].genre || 'N/A',
         }
-        event.push(obj);
-    });
-    return event;
+    })
 }
 
 export default tmEventsData;

@@ -4,7 +4,7 @@ import secaWebApi from './seca-web-api.mjs';
 const app = express();                                    //é criado um app Express()
 const port = process.env.PORT || 3000;
 
-secaWebApi(app);                                          //configura as rotas para o projeto SECA
+secaWebApi(app);
 
 // Set up a basic route for testing
 app.get('/', (req, res) => {                              //quando alguém acessa ao caminho raiz do servidor '/',
