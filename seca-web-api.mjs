@@ -12,7 +12,7 @@ router.get('/events/search', secaServices.searchEvents);                //get an
 router.get('/groups', secaServices.getGroups);                          //get all the groups
 router.get('/groups/group', secaServices.getGroup);                     // get an especific group
 router.post('/groups', secaServices.postGroup);                         //insert group 
-//router.put('groups/group', secaServices.editGroup);                   //update group
+router.put('/groups/group', secaServices.editGroup);                   //update group
 //router.delete('groups', secaServices.deleteGroups);                   //delete group
 router.post('/createUser', secaServices.postUser) ;
 

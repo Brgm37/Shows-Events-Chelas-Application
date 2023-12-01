@@ -42,7 +42,8 @@ const groupsMap = new Map();
 const usersMap = new Map();
 
 const secaDataMem = {
-    createGroup: (name, description, IdUser) => {
+    createGroup: (name, description, userName) => {
+        const IdUser = getUserId(userName);
         for(const group of groupsMap.values()){
             if(group.name == name && group.IdUser == IdUser){
                 //significa que o memso user está a tentar criar dois grupos com nomes iguais
@@ -87,11 +88,64 @@ const secaDataMem = {
         const newUser = new User(userId, userName)
         usersMap.set(userId, userName);
         return newUser
+    },
+    editGroup(userName, groupName, newGroupName, newDescription){
+        const user_Id = getUserId(userName);
+        const groupId = getGroupId(groupName, user_Id);
+        if(newGroupName != null){
+            for(const group of groupsMap.values()){
+                if(group.groupId === groupId){
+                    group.name = newGroupName
+                }
+            }
+        }
+        if(newDescription != null){
+            for(const group of groupsMap.values()){
+                if(group.groupId === groupId){
+                    group.description = newDescription
+                }
+            }
+        }
     }
 };
+function getUserId(userName){
+    for(const [id, name] of usersMap.entries()){
+        if(name === userName){
+            return id
+        }
+    }
+    return null
+}
+
+function getGroupId(groupName, user_Id){ 
+    for(const [id, group] of groupsMap.entries()){
+        if(group.name === groupName && group.IdUser === user_Id){
+            return id
+        }
+    }
+    return null
+}
+
+function isValidName(userName){
+    for(const name of usersMap.values()){
+        if(name === userName){
+            return true
+        }
+    }
+    return false
+}
+
+function isValidGroup(groupName){
+    for(const group of groupsMap.values()){
+        if(group.name === groupName){
+            return true
+        }
+    }
+    return false
+}
 
 //export default secaDataMem;
-export { User, usersMap, groupsMap, secaDataMem };
+export { User, usersMap, groupsMap, secaDataMem, isValidName, isValidGroup };
 
 function main(){ //teste
     //createUserTest()

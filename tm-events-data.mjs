@@ -27,7 +27,6 @@ const tmEventsData = {
         let page;
         if(s === null){size = 30} else {size = s};
         if(p === null){page = 1} else {page = p};
-        //const apiURL = `https://app.ticketmaster.com/discovery/v2/events.json?&size=${size}&page=${page}&apikey=${apiKey}`;
         const apiURL = `https://app.ticketmaster.com/discovery/v2/events/?keyword=${eventName}&size=${s}&page=${p}&apikey=${apiKey}`;
         try{
             const response = await fetch(apiURL);
@@ -43,14 +42,6 @@ const tmEventsData = {
     }
 }
 
-function filter1(response, eventName){
-    let event = [];
-    response._embedded.events.forEach(element => {
-        if(element.name === eventName)
-        event.push(element);
-    });
-    return event;
-}
 
 function filter(response){
     let event = [];

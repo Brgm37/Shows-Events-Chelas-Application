@@ -55,13 +55,21 @@ const secaServices = {
     },
     async postGroup(req, res){
         try{
-            const {name , description, IdUser} = req.body
+            //const {name , description, userName} = req.body
+            const name = req.query.name;
+            const description = req.query.description;
+            const userName = req.query.userName;
             if (!name || !description){
                 return res.status(400).json({error: 'Name parameter and description are required'});
             }
 
-            const postGroup = secaDataMem1.secaDataMem.createGroup(name, description, IdUser);
-            return res.status(201).json({ message: 'Group created successfully.', group: postGroup });
+            if(!secaDataMem1.isValidName(userName)){
+                return res.status(422).json({error: 'invalid userName'});
+            }
+
+            const postGroup = secaDataMem1.secaDataMem.createGroup(name, description, userName);
+            if(postGroup == null) return res.status(409).json({ message: 'Group already exists.', group: postGroup, userName: userName });
+            return res.status(201).json({ message: 'Group created successfully.', group: postGroup, userName: userName });
         }catch(error){
             console.error('Error processing the post request', error);
             return res.status(500).json({error: 'Interna server error'});
@@ -79,6 +87,33 @@ const secaServices = {
             else{
                 return res.status(201).json({message: 'user created successfully', user: newUser.userName, userId: newUser.userId});
             }
+        }catch(error){
+            console.error('Error processing the post request', error);
+            return res.status(500).json({error: 'Interna server error'});
+        }
+    },
+    async editGroup(req, res){
+        try{
+            const userName = req.query.userName;
+            const groupName = req.query.groupName;
+            const newGroupName = req.query.newGroupName || null;
+            const newDescription = req.query.newDescription || null;
+
+
+            if(!userName || !groupName){
+                return res.status(400).json({error: 'userName or groupName missing'});
+            }
+            if(!secaDataMem1.isValidName(userName) || !secaDataMem1.isValidGroup(groupName)){
+                return res.status(422).json({error: 'invalid userName or groupName'});
+            }
+            secaDataMem1.secaDataMem.editGroup(userName, groupName, newGroupName, newDescription);
+                return res.status(201).json({
+                    message: 'group updated successfully',
+                    groupOldName: groupName,
+                    groupNewName: newGroupName,
+                    groupNewDescription: newDescription
+                });
+
         }catch(error){
             console.error('Error processing the post request', error);
             return res.status(500).json({error: 'Interna server error'});
