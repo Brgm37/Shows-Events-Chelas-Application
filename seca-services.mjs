@@ -12,7 +12,7 @@ const secaServices = {
         const s = req.query.s || 30;
         const p = req.query.p || 1;
         let popularEventData = await tmEventsData.fetchPopularEvent(s, p);   //string .json com a response
-        return res.status(200).json({msg : popularEventData});                       //retorna uma resposta com o código 200, e com a string .json ao cliente
+        return res.status(200).json({msg : popularEventData});               //retorna uma resposta com o código 200, e com a string .json ao cliente
        }catch(error){
         console.error('Error fetching popular events:', error);
         return res.status(404).json({error : error})
@@ -36,7 +36,7 @@ const secaServices = {
             }
        }catch(error){
         console.error('Error fetching popular events:', error);
-        return res.status(500).json({error : error});
+        return res.status(404).json({error : error});
        }
     },
     async getGroups(req, res){
@@ -153,15 +153,15 @@ const secaServices = {
                 return res.status(400).json({error:'groupId missing'});
             }
             if(secaDataMem.deleteGroup(groupId, token)){
-                return res.status(200).json({msg : `group ${groupId} has been removed`})
+                return res.status(200).json({msg : `group ${groupId} has been removed`});
             }else
-                return res.status(403).json({error : `user ${token} unnable to delete group ${groupId}`})
+                return res.status(404).json({error : `user ${token} unnable to delete group ${groupId}`});
         }catch(error){
             console.error('Error processing the post request', error);
             res.status(500).json({error: error});
         }
     },
-    async deletEvent(req, res){
+    async deleteEvent(req, res){
         try{
             const token = req.query.token;
             if(!secaDataMem.isValidToken(token)) 
