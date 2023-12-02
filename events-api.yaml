@@ -1,0 +1,399 @@
+openapi: 3.0.1
+info:
+  title: SECA API
+  description: This is an API for SECA funcionalities 
+  contact:
+      email: A50471@alunos.isel.pt
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - description: Localhost server for testing API
+    url: http://localhost:3000
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Events
+  - name: Groups
+  - name: Users
+
+paths:
+  /api/events/popular:
+    get:
+      tags:
+      - Events
+      summary: Get the s most popular events 
+      operationId: getPopularEvents
+      parameters:
+        - name: s
+          in: query
+          description: The number of returned events
+          schema: 
+            minimum: 1
+            type: integer 
+          required: false
+        - name: p
+          in: query
+          description: The page number of the returned events
+          schema:
+            minimum: 0
+            type: integer
+          required: false
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: "#/components/responses/404NotFound"
+          
+  /api/events/search:
+    get:
+      tags:
+        - Events
+      summary: Get an event by name
+      operationId: searchEvents
+      parameters:
+        - name: eventName
+          in: query
+          description: Name of the event to search
+          required: true
+          schema:
+            type: string
+        - name: s
+          in: query
+          description: Maximum number of events to return
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: p
+          in: query
+          description: Number pages to skip
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Event'
+        '400':
+          $ref: "#/components/responses/400BadRequest"
+        '404':
+          $ref: "#/components/responses/404NotFound"
+   
+  /api/groups:
+    get:
+      tags: 
+        - Groups
+      summary: Get all groups of a user
+      security:
+        - bearerAuth: []
+      operationId: getGroups
+      parameters:
+        - name: token
+          in: query
+          description: user token associated with the groups
+          required: true
+          schema: 
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+                maxItems: 100
+        '403':
+          $ref: "#/components/responses/403Forbidden"
+        '500':
+          $ref: "#/components/responses/500InternalServerError"
+    delete:
+      tags: 
+        - Groups
+      summary: Delete an existing group
+      security:
+        - bearerAuth: []
+      operationId: deleteGroup
+      parameters:
+        - name: groupId
+          in: query
+          description: token of the group that will be deleted
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: token
+          in: query
+          description: token of the user that wants to delete a group
+          required: true
+          schema:
+            type: string 
+            format: uuid
+      responses:
+        '200':
+          description: Group was successfully deleted
+        '403':
+          $ref: "#/components/responses/403Forbidden"
+        '404':
+          $ref: "#/components/responses/404NotFound"
+        '500':
+          $ref: "#/components/responses/500InternalServerError"
+
+
+  /api/groups/group:
+    get:
+      tags: 
+        - Groups
+      summary: Get a specific group 
+      security:
+        - bearerAuth: []
+      operationId: getGroup
+      parameters:
+        - name: groupId
+          in: query 
+          description: Token of the group to get
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: token
+          in: query
+          description: user token associated with the specific group
+          required: true
+          schema: 
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Group'
+        '400':
+          $ref: "#/components/responses/400BadRequest"
+        '403':
+          $ref: "#/components/responses/403Forbidden"
+        '404':
+          $ref: "#/components/responses/404NotFound"
+        '500':
+          $ref: "#/components/responses/500InternalServerError"
+    delete:
+      tags:
+        - Groups
+      summary: Delete an event from a group
+      security:
+        - bearerAuth: []
+      operationId: deleteEvent
+      parameters:
+        - name: groupId
+          in: query
+          description: token of the group that will be altered
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: eventId
+          in: query
+          description: Id of the event that will be deleted 
+          required: true
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: token of the user that wants to delete an event from his group
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Event was successfully deleted from the group
+        '400':
+          $ref: "#/components/responses/400BadRequest"
+        '403':
+          $ref: "#/components/responses/403Forbidden"
+        '404':
+          $ref: "#/components/responses/404NotFound"
+        '500':
+          $ref: "#/components/responses/500InternalServerError"
+    put:
+      tags: 
+        - Groups
+      summary: Update a group, add an event or both. If parameter newEventId is null then the Group is just updated,
+               otherwise the Event will be added to the group
+      security:
+        - bearerAuth: []
+      operationId: editGroup
+      parameters:
+        - name: token
+          in: query
+          description: User token associated with the group
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: groupId
+          in: query
+          description: Token of the group to be updated
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: newGroupName
+          in: query
+          description: New name for the group
+          required: false
+          schema:
+            type: string
+        - name: newDescription
+          in: query
+          description: New description for the group
+          required: false
+          schema:
+            type: string
+        - name: newEventId
+          in: query
+          description: New event to add to the group
+          required: false
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Group updated successfully
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Group'
+        '403':
+          $ref: "#/components/responses/403Forbidden"
+        '400':
+          $ref: "#/components/responses/400BadRequest"
+        '500':
+          $ref: "#/components/responses/500InternalServerError"
+
+  /api/createUser:
+    post:
+      tags:
+        - Users
+      summary: Create a new User 
+      operationId: postUser
+      parameters: 
+        - name: userName
+          in: query
+          description: Name of the user that will be created
+          required: true
+          schema:
+            type: string
+      responses: 
+        '201':
+          description: User created successfully 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: "#/components/responses/400BadRequest"
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+components:
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+
+  schemas:
+    Group:
+      type: object
+      properties:
+        groupId:
+          type: string
+          format: uuid
+        description:
+          type: string
+        userId:
+          type: string
+      required:
+        - name
+        - description
+        - userName
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        date:
+          type: string
+        segment:
+          type: string
+        genre:
+          type: string
+      required:
+        - id
+        - name
+        - date
+        - segment
+        - genre
+    
+    User:
+      type: object
+      properties:
+        userName:
+          type: string
+          example: Antonio Ascensão
+        userId:
+          type: integer
+          format: uuid
+      required:
+        - userName
+        - userId
+
+    MissingParameter:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Missing required parameter"
+    InvalidBody:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Invalid body content"
+  responses: 
+    404NotFound:
+      description: "Resource not found"
+    403Forbidden:
+      description: "Access denied"
+    400BadRequest:
+      description: "Invalid Request because of a missing Parameter or invalid body content"
+      content: 
+        application/json:
+          schema: 
+            oneOf:
+              - $ref: "#/components/schemas/MissingParameter"
+              - $ref: "#/components/schemas/InvalidBody"
+    500InternalServerError:
+      description: "Error not expected"
+ 
