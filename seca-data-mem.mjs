@@ -1,162 +1,141 @@
-import crypto from 'crypto'
+import crypto from 'crypto';
 
-//classe Group com propriedades e métodos para manipularmos cada group
+// Class representing a group with name, description, IdUser, and a list of events
 class Group {
     constructor(name, description, IdUser) {
         this.name = name;
         this.description = description;
         this.IdUser = IdUser;
-        this.events = []; // Array para armazenar os eventos do grupo
+        this.events = []; // List to store events associated with the group
     }
 
+    // Method to add an event to the group
     addEvent(event) {
-        // Adiciona um evento ao grupo
         this.events.push(event);
     }
 
+    // Method to remove an event from the group by eventId
     removeEvent(eventId) {
-        // Remove um evento do grupo com base no ID do evento
         this.events = this.events.filter(event => event.id !== eventId);
     }
 }
 
+// Class representing a user with userId and userName
 class User {
     constructor(userId, userName) {
         this.userId = userId;
         this.userName = userName;
     }
 }
-// Initialize a Map to store groups and users in memory
+
+// Map objects to store groups and users
 const groupsMap = new Map();
 const usersMap = new Map();
 
+// Object containing functions for managing groups, users, and events in memory
 const secaDataMem = {
+    // Function to create a new group
     createGroup: (name, description, IdUser) => {
         let flag = 1;
+        // Check if a group with the same name, IdUser, and description already exists
         Array.from(groupsMap.values()).forEach(it => {
             if (it.name == name && it.IdUser == IdUser && it.description == description)
-                flag = null
+                flag = null;
         });
-        if (flag == null){
-            return null;
-        }
-        // Generate a unique ID 
+        if (flag == null) {
+            return null; // Return null if a group with the same properties already exists
+        } 
         const GroupId = crypto.randomUUID();
-        //create a new group and add it to the map
         const newGroup = new Group(name, description, IdUser);
         groupsMap.set(GroupId, newGroup);
         return GroupId;
-    },
+    },  
+
+    // Function to retrieve all groups for a specific user
     allGroups: (user) => {
-       return Array.from(groupsMap.values()).filter(it => it.IdUser == user);
+        return Array.from(groupsMap.values()).filter(it => it.IdUser == user);
     },
+
+    // Function to get details of a specific group based on groupId and user token
     getGroup: (groupId, token) => {
         const group = groupsMap.get(groupId);
         if (group == undefined || group.IdUser != token)
-            return null
+            return null; // Return null if the group does not exist or the user does not have access
         return group;
     },
-    createUser(userName){                                   //temos de verificar se ja existe este user name
+
+    // Function to create a new user
+    createUser(userName) {                                  
         let flag = 1;
-        Array.from(usersMap.values()).forEach(userName => {
-            if (userName == userName)
-                flag = null
+        // Check if a user with the same name already exists
+        Array.from(usersMap.values()).forEach(existingUserName => {
+            if (existingUserName == userName)
+                flag = null;
         });
-        if (flag == null){
-            return null;
-        }
-        // Generate a unique ID 
+        if (flag == null) {
+            return null; // Return null if a user with the same name already exists
+        } 
         const userId = crypto.randomUUID();
-        //create a new user and set it in the map
-        const newUser = new User(userId, userName)
+        const newUser = new User(userId, userName);
         usersMap.set(userId, userName);
-        return newUser
+        return newUser;
     },
-    editGroup(groupId, newGroupName, newDescription, newEvent, token){
+
+    // Function to edit group details and add events
+    editGroup(groupId, newGroupName, newDescription, newEvent, token) {
         const group = groupsMap.get(groupId);
-        if (group == undefined || group.IdUser != token){
-            return null;
-        }
-        else{
+        if (group == undefined || group.IdUser != token) {
+            return null; // Return null if the group does not exist or the user does not have access
+        } else {
+            // Check if any updates are requested, and apply them
             if (newGroupName == null && newDescription == null && newEvent == null)
-                return group;
-            if(newGroupName != null)
+                return group; // Return the group if no updates are requested
+            if (newGroupName != null)
                 group.name = newGroupName;
-            if(newDescription != null)
+            if (newDescription != null)
                 group.description = newDescription;
-            if(newEvent != null)
+            if (newEvent != null) 
                 group.addEvent(newEvent);
             return group;
         }
     },
+
+    // Function to check the validity of a user token
     isValidToken(token) {
         return usersMap.has(token);
     },
-    deleteGroup(groupId, token){
+
+    // Function to delete a group based on groupId and user token
+    deleteGroup(groupId, token) {
         const group = groupsMap.get(groupId);
         if (group == undefined)
-            throw new Error('Group non existent');
-        if (group.IdUser == token){
+            throw new Error('Group non-existent'); // Throw an error if the group does not exist
+        if (group.IdUser == token) {
             groupsMap.delete(groupId);
-            return true;
-        }else
-            return false;
-    },
-    deleteEvent(groupId, token, eventId){
-        const group = groupsMap.get(groupId)
+            return true; // Return true if the group is deleted successfully
+        } else
+            return false; // Return false if the user does not have permission to delete the group
+    }, 
+
+    // Function to delete an event from a group based on groupId, user token, and eventId
+    deleteEvent(groupId, token, eventId) {
+        const group = groupsMap.get(groupId);
         if (group == undefined)
-            return false
-        if(group.IdUser == token){
-            for(const event of group.events){
-                if(event.id == eventId){
+            return false; // Return false if the group does not exist
+        if (group.IdUser == token) {
+            for (const event of group.events) {
+                if (event.id == eventId) {
                     group.removeEvent(eventId);
-                    return true;
+                    return true; // Return true if the event is deleted successfully
                 }
             }
-            return false
+            return false; // Return false if the event with the specified ID is not found
+        } else {
+            return false; // Return false if the user does not have permission to delete the event
         }
-        else{return false;}
     }
 };
-/*
-function getUserId(userName){
-    for(const [id, name] of usersMap.entries()){
-        if(name === userName){
-            return id
-        }
-    }
-    return null
-}
-*/
-/*
-function getGroupId(groupName, user_Id){ 
-    for(const [id, group] of groupsMap.entries()){
-        if(group.name === groupName && group.IdUser === user_Id){
-            return id
-        }
-    }
-    return null
-}
-*/
-/*
-function isValidName(userName){
-    for(const name of usersMap.values()){
-        if(name === userName){
-            return true
-        }
-    }
-    return false
-}
-*/
-/*
-function isValidGroup(groupName){
-    for(const group of groupsMap.values()){
-        if(group.name === groupName){
-            return true
-        }
-    }
-    return false
-}
-*/
+
+// Export the secaDataMem object and additional classes and maps for external use
 export default secaDataMem;
-export { User, Group, usersMap, groupsMap};
+export { User, Group, usersMap, groupsMap };
