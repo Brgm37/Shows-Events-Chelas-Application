@@ -58,7 +58,7 @@ paths:
     get:
       tags:
         - Events
-      summary: Get an event by name
+      summary: Get events by name
       operationId: searchEvents
       parameters:
         - name: eventName
@@ -118,7 +118,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Group'
-                maxItems: 100
+                maxItems: 1000
         '403':
           $ref: "#/components/responses/403Forbidden"
         '500':
@@ -154,7 +154,47 @@ paths:
           $ref: "#/components/responses/404NotFound"
         '500':
           $ref: "#/components/responses/500InternalServerError"
-
+    post:
+      tags:
+        - Groups
+      summary: Create a new Group associated to a user
+      security:
+        - bearerAuth: []
+      operationId: postGroup
+      parameters:
+        - name: groupName
+          in: query
+          description: name given to the group that will be created
+          required: true
+          schema:
+            type: string
+        - name: description
+          in: query
+          description: description of the group
+          required: false
+          schema: 
+            type: string
+        - name: token
+          in: query
+          description: token of the user that wants to create a group
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: Group Created successfully
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Group'
+        '400':
+          $ref: "#/components/responses/400BadRequest"
+        '403':
+          $ref: "#/components/responses/403Forbidden"
+        '500': 
+          $ref: "#/components/responses/500InternalServerError"
 
   /api/groups/group:
     get:
@@ -328,27 +368,50 @@ components:
         groupId:
           type: string
           format: uuid
+          example: 57b2a8e5-df74-4b9b-b8e1-80c48a894ed5
         description:
           type: string
+          description: Basketball games I want to watch
         userId:
           type: string
+          format: uuid
+          example: 36e3b1b0-cc72-498b-bd51-1385c5183b05
       required:
-        - name
+        - userId
         - description
         - userName
+
     Event:
       type: object
       properties:
         id:
-          type: integer
+          type: string
+          format: uuid
+          example: G5v0Z9Yc3BZyy
         name:
           type: string
+          example: Phoenix Suns vs. Memphis Grizzlies
         date:
           type: string
+          example: "2024-02-03T00:30:00Z"
         segment:
-          type: string
+          type: object
+          properties:
+            id: 
+              type: string
+              example: KZFzniwnSyZfZ7v7nE
+            name:
+              type: string
+              example: Sports
         genre:
-          type: string
+          type: object
+          properties:
+            id: 
+              type: string
+              example: KnvZfZ7vAde
+            name: 
+              type: string
+              example: Basketball
       required:
         - id
         - name
@@ -365,6 +428,8 @@ components:
         userId:
           type: integer
           format: uuid
+          example: 36e3b1b0-cc72-498b-bd51-1385c5183b05
+
       required:
         - userName
         - userId
