@@ -179,3 +179,146 @@ describe('getPopularEvents', () => {
         expect(result.data.msg[0]).to.be.an('object');
     });
 });
+
+describe('deleteGroup', () => {
+  it('should delete the group successfully', async () => {
+    const req = { query: { token: 'userToken', groupId: 'someGroupId' } };
+    const res = {
+      status: (code) => ({ json: (data) => ({ code, data }) }),
+    };
+
+    const user = new secaDataMem.User(req.query.token, 'someUserName');
+    secaDataMem.usersMap.set(req.query.token, 'someUserName');
+
+    const group = new secaDataMem.Group('groupName', 'description', req.query.token);
+    secaDataMem.groupsMap.set(req.query.groupId, group);
+
+    const result = await secaServices.deleteGroup(req, res);
+  
+      expect(result.code).to.equal(200);
+      expect(result.data.msg).to.equal(`group ${req.query.groupId} has been removed`);
+      secaDataMem.usersMap.clear();
+      secaDataMem.groupsMap.clear();
+  });
+  it('should not delete the group due to not valid token', async () => {
+    const req = { query: { token: 'invalid', groupId: 'someGroupId' } };
+    const res = {
+      status: (code) => ({ json: (data) => ({ code, data }) }),
+    };
+
+    const user = new secaDataMem.User('someUserToken', 'someUserName');
+    secaDataMem.usersMap.set('someUserToken', 'someUserName');
+
+    const group = new secaDataMem.Group('groupName', 'description', 'sometoken');
+    secaDataMem.groupsMap.set(req.query.groupId, group);
+
+    const result = await secaServices.deleteGroup(req, res);
+  
+      expect(result.code).to.equal(403);
+      expect(result.data.msg).to.equal('unreconized token');
+      secaDataMem.usersMap.clear();
+      secaDataMem.groupsMap.clear();
+  });
+  it('should not delete the group due to not valid groupId', async () => {
+    const req = { query: { token: 'someUserToken', groupId: null } };
+    const res = {
+      status: (code) => ({ json: (data) => ({ code, data }) }),
+    };
+
+    const user = new secaDataMem.User(req.query.token, 'someUserName');
+    secaDataMem.usersMap.set(req.query.token, 'someUserName');
+
+    const group = new secaDataMem.Group('groupName', 'description', req.query.token);
+    secaDataMem.groupsMap.set('someGroupId', group);
+
+    const result = await secaServices.deleteGroup(req, res);
+  
+      expect(result.code).to.equal(400);
+      expect(result.data.error).to.equal('groupId missing');
+      secaDataMem.usersMap.clear();
+      secaDataMem.groupsMap.clear();
+  });
+});
+
+describe('deleteEvent', () => {
+  it('should not delete the event due to invalid eventId', async () => {
+    const req = { query: { token: null, groupId: 'someGroupId', eventId: 'someEventId'}};
+    const res = {
+      status: (code) => ({ json: (data) => ({ code, data }) }),
+    };
+
+    const user = new secaDataMem.User('someToken', 'someUserName');
+    secaDataMem.usersMap.set('someToken', 'someUserName');
+
+    const group = new secaDataMem.Group('groupName', 'description', 'someToken');
+    secaDataMem.groupsMap.set(req.query.groupId, group);
+
+    const result = await secaServices.deleteEvent(req, res);
+  
+      expect(result.code).to.equal(403);
+      expect(result.data.msg).to.equal('unreconized token');
+      secaDataMem.usersMap.clear();
+      secaDataMem.groupsMap.clear();
+  });
+  it('should delete the event sucessfully', async () => {
+    const req = { query: { token: 'someToken', groupId: 'someGroupId', eventId: 'someEventId' } };
+    const res = {
+      status: (code) => ({ json: (data) => ({ code, data }) }),
+    };
+
+    const user = new secaDataMem.User(req.query.token, 'someUserName');
+    secaDataMem.usersMap.set(req.query.token, 'someUserName');
+
+    const group = new secaDataMem.Group('groupName', 'description', req.query.token);
+    group.addEvent({
+      id: req.query.eventId,
+      name: 'test'
+    })
+    secaDataMem.groupsMap.set(req.query.groupId, group);
+
+    const result = await secaServices.deleteEvent(req, res);
+  
+      expect(result.code).to.equal(200);
+      expect(result.data.msg).to.equal(`event ${req.query.eventId} has been removed from group ${req.query.groupId}`);
+      secaDataMem.usersMap.clear();
+      secaDataMem.groupsMap.clear();
+  });
+  it('should not delete the group due to not valid groupId', async () => {
+    const req = { query: { token: 'someUserToken', groupId: null, eventId:'test' } };
+    const res = {
+      status: (code) => ({ json: (data) => ({ code, data }) }),
+    };
+
+    const user = new secaDataMem.User(req.query.token, 'someUserName');
+    secaDataMem.usersMap.set(req.query.token, 'someUserName');
+
+    const group = new secaDataMem.Group('groupName', 'description', req.query.token);
+    secaDataMem.groupsMap.set('someGroupId', group);
+
+    const result = await secaServices.deleteEvent(req, res);
+  
+      expect(result.code).to.equal(400);
+      expect(result.data.error).to.equal(`groupId : ${req.query.groupId} and eventId : ${req.query.eventId} should be especified`);
+      secaDataMem.usersMap.clear();
+      secaDataMem.groupsMap.clear();
+  });
+  it('should not delete the group due to not valid eventId', async () => {
+    const req = { query: { token: 'someUserToken', groupId: 'test', eventId: null } };
+    const res = {
+      status: (code) => ({ json: (data) => ({ code, data }) }),
+    };
+
+    const user = new secaDataMem.User(req.query.token, 'someUserName');
+    secaDataMem.usersMap.set(req.query.token, 'someUserName');
+
+    const group = new secaDataMem.Group('groupName', 'description', req.query.token);
+    secaDataMem.groupsMap.set('someGroupId', group);
+
+    const result = await secaServices.deleteEvent(req, res);
+  
+      expect(result.code).to.equal(400);
+      expect(result.data.error).to.equal(`groupId : ${req.query.groupId} and eventId : ${req.query.eventId} should be especified`);
+      secaDataMem.usersMap.clear();
+      secaDataMem.groupsMap.clear();
+  });
+});

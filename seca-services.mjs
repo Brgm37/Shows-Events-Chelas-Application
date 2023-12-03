@@ -1,5 +1,5 @@
 import tmEventsData from './tm-events-data.mjs';
-import secaDataMem from './seca-data-mem.mjs';
+import secaDataMem, { usersMap } from './seca-data-mem.mjs';
 
 const secaServices = {
     async getPopularEvents(req, res){
@@ -165,13 +165,13 @@ const secaServices = {
     async deleteEvent(req, res){
         try{
             const token = req.query.token;
-            if(!secaDataMem.isValidToken(token)) 
+            if(!secaDataMem.isValidToken(token))
                 return res.status(403).json({msg :'unreconized token'});
             const groupId = req.query.groupId;
             const eventId = req.query.eventId;
             if (groupId == null || eventId == null)
                 return res.status(400).json({error : `groupId : ${groupId} and eventId : ${eventId} should be especified`});
-            if (secaDataMem.deletEvent(groupId, token, eventId)){
+            if (secaDataMem.deleteEvent(groupId, token, eventId)){
                 return res.status(200).json({msg : `event ${eventId} has been removed from group ${groupId}`});
             }else{
                 return res.status(403).json({error : `user ${token} unnable to delete event ${eventId} from group ${groupId}`})

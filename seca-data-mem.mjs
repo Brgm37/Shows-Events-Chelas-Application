@@ -102,15 +102,20 @@ const secaDataMem = {
         }else
             return false;
     },
-    deletEvent(groupId, token, eventId){
+    deleteEvent(groupId, token, eventId){
         const group = groupsMap.get(groupId)
         if (group == undefined)
-            throw new Error('Group non existent')
-            if (group.IdUser == token){
-                group.removeEvent(eventId)
-                return true;
-            }else
-                return false;
+            return false
+        if(group.IdUser == token){
+            for(const event of group.events){
+                if(event.id == eventId){
+                    group.removeEvent(eventId);
+                    return true;
+                }
+            }
+            return false
+        }
+        else{return false;}
     }
 };
 /*

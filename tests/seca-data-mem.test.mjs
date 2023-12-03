@@ -247,3 +247,104 @@ describe('editGroup', () => {
     secaDataMem1.groupsMap.clear();   
 });
 });
+
+describe('deleteGroup', () => {
+  it('should delete a group successfully when provided with a valid group ID and token', () => {
+    const groupId = 'someGroupId';
+    const token = 'someToken';
+    
+    // Adicione um grupo simulado ao mapa de grupos
+    const fakeGroup = new secaDataMem1.Group('group', 'description', token);
+    secaDataMem1.groupsMap.set(groupId, fakeGroup);
+
+    const result = secaDataMem1.default.deleteGroup(groupId, token);
+
+    expect(result).to.be.true;
+    expect(secaDataMem1.groupsMap.has(groupId)).to.be.false;
+    secaDataMem1.groupsMap.clear();
+  });
+  it('should not delete a group because the token passes is incorrect', () => {
+    const groupId = 'someGroupId';
+    const token = 'someToken';
+    
+    // Adicione um grupo simulado ao mapa de grupos
+    const fakeGroup = new secaDataMem1.Group('group', 'description', token);
+    secaDataMem1.groupsMap.set(groupId, fakeGroup);
+
+    const result = secaDataMem1.default.deleteGroup(groupId, 'incorrect');
+
+    expect(result).to.be.false;
+    expect(secaDataMem1.groupsMap.has(groupId)).to.be.true;
+    secaDataMem1.groupsMap.clear();
+  });
+});
+
+describe('deleteEvent', () => {
+  it('should delete an event successfully when provided with a valid group ID, token, and event ID', () => {
+    const groupId = 'someGroupId';
+    const token = 'someToken';
+    const eventId = 'someEventId';
+
+    // Adicione um grupo simulado ao mapa de grupos com um evento
+    const fakeGroup = new secaDataMem1.Group('group', 'description', token);
+    fakeGroup.addEvent({
+      id: eventId,
+      name: 'eventoTeste'
+    });
+    secaDataMem1.groupsMap.set(groupId, fakeGroup);
+
+    const result = secaDataMem1.default.deleteEvent(groupId, token, eventId);
+
+    expect(result).to.be.true;
+    expect(secaDataMem1.groupsMap.get('someGroupId').events.length).to.equal(0);
+    secaDataMem1.groupsMap.clear();
+  });
+  it('should not delete an event when provided with an invalid group ID', () => {
+    const groupId = 'nonExistentGroupId';
+    const token = 'someToken';
+    const eventId = 'someEventId';
+
+    const result = secaDataMem1.default.deleteEvent(groupId, token, eventId);
+
+    expect(result).to.be.false;
+    secaDataMem1.groupsMap.clear();
+  });
+  it('should not delete an event when the user token is invalid', () => {
+    const groupId = 'someGroupId';
+    const token = 'invalidToken';
+    const eventId = 'someEventId';
+
+    // Adicione um grupo simulado ao mapa de grupos com um evento
+    const fakeGroup = new secaDataMem1.Group('group', 'description', token);
+    fakeGroup.addEvent({
+      id: eventId,
+      name: 'eventoTeste'
+    });
+    secaDataMem1.groupsMap.set('someGroupId', fakeGroup);
+
+    const result = secaDataMem1.default.deleteEvent(groupId, 'invalid', eventId);
+
+    expect(result).to.be.false;
+    expect(secaDataMem1.groupsMap.get('someGroupId').events.length).to.equal(1);
+    secaDataMem1.groupsMap.clear();
+  });
+  it('should not delete an event when provided with an invalid event ID', () => {
+    const groupId = 'someGroupId';
+    const token = 'someToken';
+    const eventId = 'nonExistentEventId';
+
+    // Adicione um grupo simulado ao mapa de grupos com um evento
+    const fakeGroup = new secaDataMem1.Group('group', 'description', token);
+    fakeGroup.addEvent({
+      id: eventId,
+      name: 'eventoTeste'
+    });
+    secaDataMem1.groupsMap.set(groupId, fakeGroup);
+
+    const result = secaDataMem1.default.deleteEvent(groupId, token, 'invalid');
+
+    expect(result).to.be.false;
+    expect(secaDataMem1.groupsMap.get('someGroupId').events.length).to.equal(1);
+    secaDataMem1.groupsMap.clear();
+  });
+});

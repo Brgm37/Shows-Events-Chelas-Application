@@ -60,16 +60,14 @@ function formatData(data){
 }
 
 function filter(response){
-//    console.log(response._embedded.events[0])
+    console.log(response._embedded.events[1])
     return response._embedded.events.map(element => {
         return {
-            name: element.name,
-            date: element.dates.start.dateTime,
-            /*venue: {
-                name: element._embedded.venues.name || null,
-                country: element._embedded.venues.country.name || null,
-                city: element._embedded.venues.city.name || null
-            }*/
+            id : element.id,
+            name : element.name,
+            date : element.dates.start.localDate,
+            //segment : element.classifications[0].segment || 'N/A',
+            //genre : element.classifications[0].genre || 'N/A',
         };
     });
 }
