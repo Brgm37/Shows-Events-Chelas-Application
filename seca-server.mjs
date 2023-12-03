@@ -9,7 +9,7 @@ secaWebApi(app);
 // Set up a basic route for testing
 app.get('/', (req, res) => {                              //quando alguém acessa ao caminho raiz do servidor '/',
     res.send('SECA Server is up and running!');           //passa o seguinte callBack
-  });
+});
 
 app.listen(port, () => {                                  //usado para criar o servidor e executar o callBack passado 
     console.log(`Server is running on port ${port}`)      //quando o servidor é criado

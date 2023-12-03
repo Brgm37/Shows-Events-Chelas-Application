@@ -26,6 +26,7 @@ const tmEventsData = {
                 throw new Error('Error fetching event with the name ', eventName);
             }
             else{
+                //return (await response.json());
                 return filter(await response.json());
             }
         }catch(error){
@@ -59,15 +60,18 @@ function formatData(data){
 }
 
 function filter(response){
+//    console.log(response._embedded.events[0])
     return response._embedded.events.map(element => {
         return {
-            id : element.id,
-            name : element.name,
-            date : element.date,
-            segment : element.classifications[0].segment || 'N/A',
-            genre : element.classifications[0].genre || 'N/A',
-        }
-    })
+            name: element.name,
+            date: element.dates.start.dateTime,
+            /*venue: {
+                name: element._embedded.venues.name || null,
+                country: element._embedded.venues.country.name || null,
+                city: element._embedded.venues.city.name || null
+            }*/
+        };
+    });
 }
 
 export default tmEventsData;

@@ -32,7 +32,7 @@ const secaServices = {
                 return res.status(400).json({error: 'eventName parameter is required for event search'});
             }else{
                 const popularEventData = await tmEventsData.fetchEventByName(eventName, s, p);        //string .json com a response
-                return res.status(200).json({msg : popularEventData});                                  //retorna uma resposta com o código 200, e com a string .json ao cliente
+                return res.status(200).json(popularEventData);                                  //retorna uma resposta com o código 200, e com a string .json ao cliente
             }
        }catch(error){
         console.error('Error fetching popular events:', error);
@@ -66,7 +66,7 @@ const secaServices = {
                 if (group != null)
                     return res.status(200).json(group);
                 else 
-                    return res.status(404).json({msg : "Group not found fot the user ", token});
+                    return res.status(404).json({msg : "Group not found for the user ", token});
             }
         }catch(error){
             console.error('Error getting the group:', error);
@@ -75,8 +75,7 @@ const secaServices = {
     },
     async postGroup(req, res){
         try{
-            //const {name , description, userName} = req.body
-            const token = req.query.token
+            const token = req.query.IdUser
             if (!secaDataMem.isValidToken(token)){
                 return res.status(403).json({msg :'unreconized token'});
             }
@@ -99,7 +98,8 @@ const secaServices = {
             if (userName == null)
                 return res.status(400).json({error: 'userName parameter is required'});
             const newUser = secaDataMem.createUser(userName);
-            
+
+            if(newUser == null) return res.status(409).json({error: 'userName already exists'});
             return res.status(201).json({msg: 'user created successfully', user: newUser.userName, userId: newUser.userId});
         }catch(error){
             console.error('Error processing the post request', error);
@@ -130,6 +130,7 @@ const secaServices = {
             let newEvent;
             if (newEventId != null) newEvent = await tmEventsData.fetchEventById(newEventId); else newEvent = null;
             const change = secaDataMem.editGroup(groupId, newGroupName, newDescription, newEvent, token);
+            if(change == null) return res.status(403).json({error: 'no such group found'})
             return res.status(201).json({
                 msg: 'group updated successfully',
                 groupId: groupId,

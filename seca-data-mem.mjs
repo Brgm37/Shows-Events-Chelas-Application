@@ -40,14 +40,6 @@ const secaDataMem = {
         if (flag == null){
             return null;
         }
-        /*
-        for(const group of groupsMap.values()){
-            if(group.name == name && group.IdUser == IdUser){
-                //significa que o memso user está a tentar criar dois grupos com nomes iguais
-                return null
-            }
-        }
-        */
         // Generate a unique ID 
         const GroupId = crypto.randomUUID();
         //create a new group and add it to the map
@@ -56,17 +48,6 @@ const secaDataMem = {
         return GroupId;
     },
     allGroups: (user) => {
-        // Return an array of all groups associated to the user
-        //return [...groupsMap.values()]
-        /*
-        const array = []
-        for(const group of groupsMap.values()){
-            if(group.IdUser === user){
-                array.push(group)
-            }
-        }
-        return array
-        */
        return Array.from(groupsMap.values()).filter(it => it.IdUser == user);
     },
     getGroup: (groupId, token) => {
@@ -74,23 +55,16 @@ const secaDataMem = {
         if (group == undefined || group.IdUser != token)
             return null
         return group;
-        /*
-        for(const group of groupsMap.values()){
-            if(group.groupId === groupId){
-                return group
-            }
-        }
-        */
-        return null
     },
-    createUser(userName){
-        /*
-        for(const username of usersMap.values()){
-            if(username == userName){
-                return null
-            }
+    createUser(userName){                                   //temos de verificar se ja existe este user name
+        let flag = 1;
+        Array.from(usersMap.values()).forEach(userName => {
+            if (userName == userName)
+                flag = null
+        });
+        if (flag == null){
+            return null;
         }
-        */
         // Generate a unique ID 
         const userId = crypto.randomUUID();
         //create a new user and set it in the map
@@ -98,10 +72,10 @@ const secaDataMem = {
         usersMap.set(userId, userName);
         return newUser
     },
-     editGroup(groupId, newGroupName, newDescription, newEvent, token){
+    editGroup(groupId, newGroupName, newDescription, newEvent, token){
         const group = groupsMap.get(groupId);
         if (group == undefined || group.IdUser != token){
-            throw new Error('Unnable to access group');
+            return null;
         }
         else{
             if (newGroupName == null && newDescription == null && newEvent == null)
@@ -180,4 +154,4 @@ function isValidGroup(groupName){
 }
 */
 export default secaDataMem;
-//export { User, usersMap, groupsMap, secaDataMem, isValidName, isValidGroup };
+export { User, Group, usersMap, groupsMap};
