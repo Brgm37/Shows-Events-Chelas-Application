@@ -60,7 +60,6 @@ function formatData(data){
 }
 
 function filter(response){
-    console.log(response._embedded.events[1])
     return response._embedded.events.map(element => {
         return {
             id : element.id,
