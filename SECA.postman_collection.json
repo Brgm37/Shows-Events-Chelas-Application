@@ -1,0 +1,348 @@
+{
+	"info": {
+		"_postman_id": "93053a3f-da72-4f99-8f8c-1f8278024765",
+		"name": "SECA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "31366572"
+	},
+	"item": [
+		{
+			"name": "getEventByName",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/events/search/?eventName=Warriors&s=5&p=0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"events",
+						"search",
+						""
+					],
+					"query": [
+						{
+							"key": "eventName",
+							"value": "Warriors"
+						},
+						{
+							"key": "s",
+							"value": "5"
+						},
+						{
+							"key": "p",
+							"value": "0"
+						},
+						{
+							"key": "token",
+							"value": "0515d5d3-d78d-4da4-aa2b-d3a8cc4c5ecd",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getPopularEvent",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/events/popular",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"events",
+						"popular"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "99b9ff6b-fdd7-45d2-a0c0-24bcd6a2bdd7",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getPopularEventsDefault",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/events/popular/"
+			},
+			"response": []
+		},
+		{
+			"name": "NewUser",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/createUser/?userName=Arthur",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"createUser",
+						""
+					],
+					"query": [
+						{
+							"key": "userName",
+							"value": "Test"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addGroup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/groups/?token=e6486532-465f-4ef6-9d70-3a0990b59572&name=test&description=test1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"groups",
+						""
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": ""
+						},
+						{
+							"key": "name",
+							"value": "test"
+						},
+						{
+							"key": "description",
+							"value": "test1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getGroups",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/groups/?token=5b45b407-1f70-413d-aa12-ad0607a4b50a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"groups",
+						""
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteGroup",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/groups/?token=5b45b407-1f70-413d-aa12-ad0607a4b50a&groupId=8121de06-f1f6-4381-b445-b821ace8db2c",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"groups",
+						""
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": ""
+						},
+						{
+							"key": "groupId",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "editGroup",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/groups/group/?token=6699192b-b0d2-4a94-8853-3e9bf69a6a4d&eventId=vvG1zZ9YJwb39L&groupId=377e2fff-4da9-40fe-8fb5-a2deaf361927",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"groups",
+						"group",
+						""
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": ""
+						},
+						{
+							"key": "eventId",
+							"value": "vvG1zZ9YJwb39L"
+						},
+						{
+							"key": "groupId",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getGroup",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/groups/group/?token=9f7223c5-ee57-46f6-b0e2-a7ae186bdf4f&groupId=df645dbf-bd25-4ffd-a2a2-fe35a3188a46",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"groups",
+						"group",
+						""
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": ""
+						},
+						{
+							"key": "groupId",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteEvent",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/groups/group/?token=9f7223c5-ee57-46f6-b0e2-a7ae186bdf4f&groupId=df645dbf-bd25-4ffd-a2a2-fe35a3188a46&eventId=vvG1zZ9YJwb39L",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"groups",
+						"group",
+						""
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": ""
+						},
+						{
+							"key": "groupId",
+							"value": ""
+						},
+						{
+							"key": "eventId",
+							"value": "vvG1zZ9YJwb39L"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addEvent",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/groups/group/?token=36e3b1b0-cc72-498b-bd51-1385c5183b05&eventId=G5v0Z9Yc3BZyy&groupId=57b2a8e5-df74-4b9b-b8e1-80c48a894ed5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"groups",
+						"group",
+						""
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": ""
+						},
+						{
+							"key": "eventId",
+							"value": "G5v0Z9Yc3BZyy"
+						},
+						{
+							"key": "groupId",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
