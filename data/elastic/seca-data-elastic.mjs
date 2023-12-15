@@ -1,87 +1,10 @@
-
+import {get, post, del, put} from './fetch-wrapper.mjs';
 import uriManager from './uri-manager.mjs';
-const { Client } = require('@elastic/elasticsearch');
-const esClient = new Client({ node: 'http://localhost:9200'});
 
-async function search(index, query){
-    try{
-        const response = await esClient.search({
-            index: index,
-            q: query,
-        });
-        console.log('Search results:', response.hits.hits);
-        return response.hits.hits
-    } catch(error){
-        console.error('Error searching documents:', error);
-        throw error;
-    }
-}
+const INDEX_GROUPS = 'groups';
+//const INDEX_USERS = 'users';
 
-async function indexDocument(index, doc){
-    try{
-        const response = await esClient.index({
-            index: index,
-            body: doc,
-        });
-        console.log('Document indexed:', response);
-    }catch(error){
-        console.error('Error adding document:', error);
-        throw error;
-    }
-}
-
-
-await esClient.deleteByQuery({
-    index: 'Groups',
-    body: {
-        query: {
-            bool: {
-                must: [
-                    { term: { userId: userId } },
-                    { term: { groupId: groupId } },
-                ],
-            },
-        },
-    },
-});
-
-async function deleteDocumentByQuery(index, token, groupId){
-    try{
-        const groupAndUser = {
-            IdGroup: groupId,
-            IdUser: token,
-        };
-        const query = JSON.parse(groupAndUser);
-        const response = await esClient.deleteByQuery({
-            index: index,
-            body: {
-                query: {
-                    match: query,
-                },
-            },
-        });
-        return response;
-    }catch(error){
-        console.error('Error deleting documents by query:', error);
-        throw error;
-    }
-}
-
-async function createIndex(index, body){
-    try {
-        await esClient.indices.create({
-          index: index,
-          body: body
-        });
-        console.log('Index created successfully');
-      } catch (error) {
-        console.error('Error creating index:', error);
-      }
-}
-
-
-export default function (indexName = 'seca'){
-
+export default function (indexName = INDEX_GROUPS){
     const URI_MANAGER = uriManager(indexName)
 
     return {
@@ -89,59 +12,80 @@ export default function (indexName = 'seca'){
         getGroup,
         updateGroup,
         insertGroup,
-        deleteGroup
+        insertUser,
+        deleteGroup,
+        isValid
     }
 
     async function getGroups(userId){
-        const user = {
-            userId: userId
-        }
-        const query = JSON.stringify(user)
-        return await search('Groups', query);
-    }
-    
-    async function getGroup(userId, groupId){
-        const userAndGroup = {
-            IdUser: userId,
-            Idgroup: groupId,
+        const query = {
+            query: {
+                match: {
+                    "userId": userId
+                }
+            }
         };
-        const query = JSON.stringify(userAndGroup);
-        return await search('Groups', query);
+        return post(URI_MANAGER.getAll(), query).then(body => body.hits.hits.map(createGroupFromElastic));
     }
 
-    async function isValidToken(userId){
-        const user = {
-            token: userId
-        };
-        const query = JSON.stringify(user);
-        const response = await search('Users', query);
-        return response.length == 1;
+    async function getGroup(groupId){
+        return get(URI_MANAGER.get(groupId)).then(createGroupFromElastic);
     }
 
-    async function addGroup(name, description, IdUser){
-        const group = {
-            name: name,
-            description: description,
-            IdUser: IdUser
-        };
-        const body = JSON.stringify(group);
-        return await indexDocument('Groups', body);
+    async function updateGroup(groupUpdate){
+        return put(URI_MANAGER.update(groupUpdate.groupId), groupUpdate);
     }
 
-    async function addUser(userName, IdUser){
-        const user = {
-            userName: userName,
-            IdUser: IdUser
-        };
-        const body = JSON.stringify(user);
-        return await indexDocument('Users', body);
+    async function insertGroup(newGroup){
+        return post(URI_MANAGER.create(), newGroup).then(body => {newGroup.groupId = body._id; return newGroup});
     }
-    
+
+    async function insertUser(newUser){
+        return post(URI_MANAGER.create(), newUser).then(body => {newUser.token = body._id; return newUser});
+    }
+
     async function deleteGroup(groupId){
-       return await deleteDocumentByQuery('Group', groupId)
+        return del(URI_MANAGER.delete(groupId)).then(body => body._id);
     }
 
-    async function deleteUser(IdUser){
-        
+    async function isValid(userName, password){
+        let user = {
+            userName: userName,
+            password: password
+        }
+        const query ={
+            query:{
+                bool: {
+                    must:[
+                        {
+                            match:{
+                                "userName":userName
+                            }
+                        },
+                        {
+                            match:{
+                                "password":password
+                            }
+                        }
+
+                    ]
+                }
+            }
+        };
+       return post(URI_MANAGER.getAll(), query).then(body => {
+        const usert = body.hits.hits;
+        if (usert.length == 0){
+            user.token = undefined;
+            return user;
+        }else{
+        user.token = usert[0]._id; 
+        return user;
+        }
+    });
     }
+
+    function createGroupFromElastic(groupElastic){
+        return Object.assign(groupElastic._source, {groupId: groupElastic._id},);
+    }
+
 }

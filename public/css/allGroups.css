@@ -1,0 +1,54 @@
+.headerAllGroups{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+a{
+    font-size: large;
+}
+
+.createGroupDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sectionMain{
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 20px;
+    padding: 1%;
+}
+
+.groupSection{
+    padding: 3% 0;
+    background-color: rgb(216, 56, 56);
+    border-radius: 12%;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.groupSection:hover{
+    transform: scale(1.1);
+    background-color: rgb(55, 166, 68);
+}
+
+.groupSection.header{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.groupSection.header.form{
+    width: 30%;
+}

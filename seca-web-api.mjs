@@ -2,6 +2,7 @@ import tmEventsData from './tm-events-data.mjs';
 import * as secaServices from './seca-services.mjs'
 
 const secaApi = {
+
     async getPopularEvents(req, res){
        try{
         /*
@@ -25,14 +26,14 @@ const secaApi = {
                 return res.status(403).json({msg : 'unreconized token'});
             }
             */
-            const eventName = req.query.eventName;          //extrai o parâmetro eventName do URL passado em req
-            const s = req.query.s || 30;
-            const p = req.query.p || 1;
+            const eventName = req.params.eventName;          //extrai o parâmetro eventName do URL passado em req
+            const s = req.params.s || 30;
+            const p = req.params.p || 1;
             if (!eventName){
                 return res.status(400).json({error: 'eventName parameter is required for event search'});
             }else{
                 const popularEventData = await tmEventsData.fetchEventByName(eventName, s, p);        //string .json com a response
-                return res.status(200).json(popularEventData);                                  //retorna uma resposta com o código 200, e com a string .json ao cliente
+                return res.render('addEvent', {events: popularEventData, style: 'addEvent.css'});                                  //retorna uma resposta com o código 200, e com a string .json ao cliente
             }
        }catch(error){
         console.error('Error fetching popular events:', error);

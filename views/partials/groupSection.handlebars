@@ -1,0 +1,18 @@
+<header class="header">
+    <h1>GroupName: {{group.name}}</h1>
+    <p>GroupDescription: {{group.description}}</p>
+</header>
+
+<form method="GET" action="/site/{{token}}/{{group.groupId}}/details">
+    <input type="submit" value="Details">
+</form>
+
+{{!-- <form class="form" method="GET" action="/updateGroup/{{group.groupId}}/{{group.name}}/{{group.description}}">
+    <input type="submit" value="Update Group">
+</form>
+<form class="form" method="POST" action='/site/groups/{{group.groupId}}/delete'>
+    <input type="submit" value="Delete Group">
+</form>
+<form class="form" method="GET" action='/addEvent/{{group.groupId}}'>
+    <input type="submit" value="Add Event">
+</form> --}}

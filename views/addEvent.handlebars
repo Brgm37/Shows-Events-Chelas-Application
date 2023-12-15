@@ -1,0 +1,14 @@
+<header>
+    <h1>Search for an Event</h1>
+    <form method="GET" action="/api{{#if groupId}}/{{groupId}} {{/if}}/events/search">
+        <input type="text" name="eventName">
+        <input type="submit" value="Search Event">   
+    </form>
+</header>
+
+
+{{#each events}}
+            <hr>
+                {{> eventSection event=this token=../token groupId=../groupId}}
+            </hr>
+{{/each}}

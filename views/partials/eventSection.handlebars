@@ -1,0 +1,18 @@
+<form method="POST" action="site/groups/{{token}}/{{groupId}}/addEvent/{{event.id}}">
+    <input type="hidden" name="eventId" value="{{this.id}}"> <p>{{token}}</p>
+    <strong>{{this.name}}</strong>
+    <input type="hidden" name="eventName" value="{{this.name}}">
+    <p>Data: {{this.date}}</p>
+    <input type="hidden" name="eventDate" value="{{this.date}}">
+    <p>Vendas: {{this.sales}}</p>
+    <input type="hidden" name="eventSales" value="{{this.sales}}">
+    <p>Gênero: {{this.genre}}</p>
+    <input type="hidden" name="eventGenre" value="{{this.genre}}">
+    <p>Sub-Gênero: {{this.subGenre}}</p>
+    <input type="hidden" name="eventSubGenre" value="{{this.subGenre}}">
+    <p>Segmento: {{this.segment}}</p>
+    <input type="hidden" name="eventSegment" value="{{this.segment}}">
+    <p>Imagem: {{this.image}}</p>
+    <input type="hidden" name="image" value="{{this.image}}">
+    <input type="submit" value="Add Event">
+</form>
