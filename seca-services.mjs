@@ -1,4 +1,4 @@
-import tmEventsData from './data/tm-events-data.mjs';
+import tmEventsData from './tm-events-data.mjs';
 import errors from './common/errors.mjs';
 
 class Group {
@@ -31,7 +31,6 @@ export default function(usersTable, groupsTable) {
         deleteEvent,
         addEvent,
         signIn,
-        singUp
     }
 
     async function fetchEventById(eventId){
@@ -93,7 +92,7 @@ export default function(usersTable, groupsTable) {
     async function createUser(userName){
         try{
             const newUser = new User(userName)
-            return await secaElastic(INDEX_USERS).insertUser(newUser);
+            return await usersTable.insertUser(newUser);
         }catch(erro){
             throw errors.INTERNAL_SERVER_ERROR("createUser", erro);
         }
@@ -104,10 +103,10 @@ export default function(usersTable, groupsTable) {
             const groupUpdate = await groupsTable.getGroup(groupId);
             if (groupUpdate.userId != userId)
                 throw errors.NOT_AUTHORIZED(userId, groupId);
-            if (newGroupName != null)
-            groupUpdate.name = newGroupName;
-            if (newDescription != null)
-            groupUpdate.description = newDescription;
+            if (newGroupName != null);
+                groupUpdate.name = newGroupName;
+            if (newDescription != null);
+                groupUpdate.description = newDescription;
             return await groupsTable.updateGroup(groupUpdate);
         }catch(erro){
             throw errors.NOT_FOUND(groupId);
@@ -115,7 +114,7 @@ export default function(usersTable, groupsTable) {
     }
 
     async function isValid(userId) {
-        return await secaElastic(INDEX_USERS).isValid(userId);
+        return await usersTable.isValid(userId);
     }
 
     async function deleteGroup(groupId, userId){
@@ -158,7 +157,7 @@ export default function(usersTable, groupsTable) {
 
     async function signIn(userName, password){
         try{
-            const user = await secaElastic(INDEX_USERS).isValid(userName, password);
+            const user = await usersTable.isValid(userName, password);
 
             if (user.token == undefined)
                 return false;
@@ -171,9 +170,9 @@ export default function(usersTable, groupsTable) {
 
     async function signUp(userName, password){
         try{
-            const user = await secaElastic(INDEX_USERS).isValid(userName, password);
+            const user = await usersTable.isValid(userName, password);
             if (user.token == undefined)
-                return await secaElastic(INDEX_USERS).insertUser(new User(userName, password));
+                return await usersTable.insertUser(new User(userName, password));
             else
                 return false;
         }catch(erro){

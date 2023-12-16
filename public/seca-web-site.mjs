@@ -4,14 +4,31 @@ import crypto from 'crypto';
 import secaServices from './seca-services.mjs';
 import { groups, users} from './seca-server.mjs'; */
 
-import secaServices from "../seca-services.mjs";
+import errors from "../common/errors.mjs";
 
-const secaSite = {
+export default function(secaServices){
+  if(!secaServices){
+    throw errors.INVALID_ARGUMENT("secaServices");
+  }
+  return {
+    makeHomePage,
+  }
+
+  async function makeHomePage(req, res){
+    try{
+      res.render('home');
+    }catch(error){
+      res.render('error', {code: errors.INTERNAL_SERVER_ERROR, description:'Internal Server Error'});
+    }
+  }
+}
+
+export const secaWeb = {
     async _getHome(req, res){
       res.render('home');
     }
 }
-export default secaSite;
+
 /* 
 const secaSite = {
 

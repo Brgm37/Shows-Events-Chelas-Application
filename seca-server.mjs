@@ -1,11 +1,11 @@
 import cors from 'cors';
-import  express  from 'express';
+import express from 'express';
 import url from 'url';
 import path from 'path';
 import hbs from 'hbs';
 
-import secaWeb from './public/seca-web-site.mjs';
-import secaApi from './seca-web-api.mjs';
+import secaWebInit from './public/seca-web-site.mjs';
+import secaApiInit from './seca-web-api.mjs';
 import secaDataElasticInit from './data/elastic/seca-data-elastic.mjs';
 import secaServicesInit from './seca-services.mjs';
 
@@ -15,33 +15,38 @@ const INDEX_USERS = 'users';
 const secaDataUSers = secaDataElasticInit(INDEX_GROUPS);
 const secaDataGroups = secaDataElasticInit(INDEX_USERS);
 const secaServices = secaServicesInit(secaDataUSers, secaDataGroups);
-const secaApi = secaApiInit(secaServices);
-const secaSite = secaApiInit(secaServices);
+//const secaApi = secaApiInit(secaServices);
+const secaSite = secaWebInit(secaServices);
 
 const port = 3000;
 
 const currentFileDir = url.fileURLToPath(new URL('.', import.meta.url));
 
 console.log('Setting up server');
-let app = express();
+const app = express();
 
-app.use('public', express.static(`${currentFileDir}/public`, { type: 'text/css' }));
+app.use(express.static(`${currentFileDir}/public`, { type: 'text/css' }));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/site', express.static(`${currentFileDir}/public`));
 
+// Serve static files (CSS, images, etc.)
+app.use('/public', express.static(path.join(currentFileDir, 'public')));
+
+// Set up Handlebars as the view engine
 app.set('view engine', 'hbs');
 const viewDir = path.join(currentFileDir, 'public', 'views');
 app.set('views', viewDir);
 hbs.registerPartials(path.join(viewDir, 'partials'));
 
-app.get('/site/home', secaWeb._getHome);
+app.get('/site/home', secaSite.makeHomePage);
 
-app.listen(port, () => {                                                    //usado para criar o servidor e executar o callBack passado 
-    console.log(`Server is running on port ${port}`);                        //quando o servidor é criado
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 });
-console.log("End setting up server")
+
+console.log("End setting up server");
+
 /*import express from 'express';
 import cors from 'cors';
 import { engine } from 'express-handlebars';
