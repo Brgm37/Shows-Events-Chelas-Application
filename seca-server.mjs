@@ -1,21 +1,89 @@
-import express from 'express';
+import cors from 'cors';
+import  express  from 'express';
+import url from 'url';
+import path from 'path';
+import hbs from 'hbs';
+
+import secaWeb from './public/seca-web-site.mjs';
+import secaApi from './seca-web-api.mjs';
+import secaDataElasticInit from './data/elastic/seca-data-elastic.mjs';
+import secaServicesInit from './seca-services.mjs';
+
+const INDEX_GROUPS = 'groups';
+const INDEX_USERS = 'users';
+
+const secaDataUSers = secaDataElasticInit(INDEX_GROUPS);
+const secaDataGroups = secaDataElasticInit(INDEX_USERS);
+const secaServices = secaServicesInit(secaDataUSers, secaDataGroups);
+const secaApi = secaApiInit(secaServices);
+const secaSite = secaApiInit(secaServices);
+
+const port = 3000;
+
+const currentFileDir = url.fileURLToPath(new URL('.', import.meta.url));
+
+console.log('Setting up server');
+let app = express();
+
+app.use('public', express.static(`${currentFileDir}/public`, { type: 'text/css' }));
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/site', express.static(`${currentFileDir}/public`));
+
+app.set('view engine', 'hbs');
+const viewDir = path.join(currentFileDir, 'public', 'views');
+app.set('views', viewDir);
+hbs.registerPartials(path.join(viewDir, 'partials'));
+
+app.get('/site/home', secaWeb._getHome);
+
+app.listen(port, () => {                                                    //usado para criar o servidor e executar o callBack passado 
+    console.log(`Server is running on port ${port}`);                        //quando o servidor é criado
+});
+console.log("End setting up server")
+/*import express from 'express';
+import cors from 'cors';
 import { engine } from 'express-handlebars';
 import secaApi from './seca-web-api.mjs';
-import secaSite from './seca-web-site.mjs';
+import secaSite from './public/seca-web-site.mjs';
 import hbs from 'hbs';
 import secaServices from './seca-services.mjs';
 
-const app = express();                                                 //é criado um app Express()
+const app = express();
+const port = process.env.PORT || 3000;
+
 app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+app.engine('handlebars', engine('main'));
+app.set('view engine', 'handlebars');
+app.use(express.static('public'));
+app.get('/home',secaSite._getHome); 
+
+//é criado um app Express()
+/* app.use(express.json());
 app.use(express.urlencoded());
 app.engine('handlebars', engine('main'));
 app.set('view engine', 'handlebars');
 app.use(express.static('public'));
-const port = process.env.PORT || 3000;
+
 
 //configuração do router
 const router = express(); 
 app.use('/seca', router);
+ */
+
+//SECA Site route
+//routerSite.get('/home', secaSite.homePage);
+
+//SECA Api route
+//routerApi.get('/api/events/popular', secaApi.getPopularEvents);
+//routerApi.get('/SignIn', secaSite.signIn);
+//app.get('/site/logIn', secaSite.logIn);
+/* 
+app.get('/home', (req, res) => {                                                //quando alguém acessa ao caminho raiz do servidor '/',
+    res.render('home', { title: 'home', style: 'home.css'});                             //passa o seguinte callBack
+});
 
 const groups =[];
 const users = [];
@@ -73,9 +141,12 @@ app.post('/site/signIn', secaSite.signIn);
 router.post('/site/groups/update', secaSite.updateGroup);                         
 app.post('/site/groups/:token/:groupId/delete', secaSite.deleteGroup);
 app.post('site/groups/:token/:groupId/addEvent/:eventId', secaSite.addEvent);
-
+ */
 /*export default function secaApi(app){                                //recebe como parametro a app Express e usa
     app.use('/seca', router);                                          //o método app.use para associar o prefixo
-}*/                                                                    //'/api' a todas as rotas do router 
-
-console.log("End setting up server")
+}
+                                                                    //'/api' a todas as rotas do router 
+app.listen(port, () => {                                                    //usado para criar o servidor e executar o callBack passado 
+    console.log(`Server is running on port ${port}`);                        //quando o servidor é criado
+});
+console.log("End setting up server") */

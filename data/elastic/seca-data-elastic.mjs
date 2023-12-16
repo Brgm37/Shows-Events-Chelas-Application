@@ -1,10 +1,7 @@
 import {get, post, del, put} from './fetch-wrapper.mjs';
 import uriManager from './uri-manager.mjs';
 
-const INDEX_GROUPS = 'groups';
-//const INDEX_USERS = 'users';
-
-export default function (indexName = INDEX_GROUPS){
+export default function (indexName){
     const URI_MANAGER = uriManager(indexName)
 
     return {
