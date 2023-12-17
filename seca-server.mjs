@@ -58,6 +58,9 @@ app.post('/site/groups/delete/:userId/:groupId', secaSite.deleteGroup);
 app.get('/site/events/:userId/:groupId', secaSite.showEvent);
 app.post('/site/groups/addEvent/:userId/:groupId/:eventId', secaSite.addEvent);
 app.post('/site/groups/event/delete/:userId/:groupId/:eventId', secaSite.deleteEvent);
+app.post('/', secaSite.dummy);
+app.get('/site/events/search', secaSite.showEvents);
+app.get('/site/css', secaSite.showCss);
 
 
 app.listen(port, () => {

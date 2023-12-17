@@ -1,18 +1,17 @@
+{{> header pageTitle="SECA" class="header"}}
 
 <header class="headerAllGroups">
-    <a href="./home">SingOut</a>
-</header>
+    <a href="./home">Sign Out</a>
+    </header>
 
-{{> header pageTitle="AllGroups"}}
+  <div class="createGroupDiv">{{> newGroup userId=userId }}</div>
 
-<div class="createGroupDiv">{{> newGroup userId=userId }}</div>
+  <hr>
 
-<hr>
-
-<section class="sectionMain">
+  <section class="sectionMain">
     {{#each groups}}
-        <section class="groupSection">
-            {{> groupSection userId=userId group=this}}
-        </section>
+      <section class="groupSection">
+        {{> groupSection userId=userId group=this}}
+      </section>
     {{/each}}
-</section>
+  </section>

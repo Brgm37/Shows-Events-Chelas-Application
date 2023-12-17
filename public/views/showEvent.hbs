@@ -1,0 +1,18 @@
+<header>
+    <a href="/site/home">Home</a>
+    <h1>Search for an Event</h1>
+    <form method="GET" action="/site/events/search">
+        <p>EventName<input type="text" {{#if eventName}} value="{{eventName}}" {{/if}} name="eventName"></p>
+        <input type="submit" value="Search Event">
+    </form>
+    <a href="/site/events/search" class="button">PopularEvents</a>
+</header>
+    {{#if (gt p 0)}}
+        <a href="/site/events/search/?p={{sub p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">PreviousPage</a>
+    {{/if}}
+    <a href="/site/events/search/?p={{add p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">NextPage</a>
+{{#each events}}
+            <hr>
+                {{> showEventSection event=this}}
+            </hr>
+{{/each}}

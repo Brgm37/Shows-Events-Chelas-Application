@@ -1,18 +1,9 @@
-<header class="header">
-    <h1>GroupName: {{group.name}}</h1>
-    <p>GroupDescription: {{group.description}}</p>
-</header>
-
-<form method="GET" action="/site/details/{{userId}}/{{group.groupId}}">
-    <input type="submit" value="Details">
-</form>
-
-{{!-- <form class="form" method="GET" action="/updateGroup/{{group.groupId}}/{{group.name}}/{{group.description}}">
-    <input type="submit" value="Update Group">
-</form>
-<form class="form" method="POST" action='/site/groups/{{group.groupId}}/delete'>
-    <input type="submit" value="Delete Group">
-</form>
-<form class="form" method="GET" action='/addEvent/{{group.groupId}}'>
-    <input type="submit" value="Add Event">
-</form> --}}
+<header class="groupHeader">
+    <h1>{{group.name}}</h1>
+    <p>{{group.description}}</p>
+  </header>
+<article class="groupSection">
+  <form method="GET" action="/site/details/{{userId}}/{{group.groupId}}">
+    <input type="submit" value="Details" class="detailsButton">
+  </form>
+</article>

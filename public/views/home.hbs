@@ -1,9 +1,13 @@
-{{> header pageTitle="HomePage"}}
+{{> header pageTitle="SECA" class="header"}}
+
+<div class="container">
+  {{> createUser}}
+</div>
 
 <div class="container">
   {{> getUser}}
+</div>
 
-  <a href="/api/events/search">Search</a>
-
-  {{> createUser}}
+<div class="navigation">
+    <a href="/site/events/search">Search</a>
 </div>

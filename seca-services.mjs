@@ -36,6 +36,7 @@ export default function(usersTable, groupsTable) {
         deleteEvent,
         addEvent,
         signIn,
+        signUp
     }
 
     async function fetchEventById(eventId){
