@@ -38,7 +38,7 @@ export default function (indexName){
     }
 
     async function insertUser(newUser){
-        return post(URI_MANAGER.create(), newUser).then(body => {newUser.token = body._id; return newUser});
+        return post(URI_MANAGER.create(), newUser).then(body => { return body._id});
     }
 
     async function deleteGroup(groupId){
@@ -72,11 +72,9 @@ export default function (indexName){
        return post(URI_MANAGER.getAll(), query).then(body => {
         const usert = body.hits.hits;
         if (usert.length == 0){
-            user.token = undefined;
-            return user;
+            return undefined;
         }else{
-        user.token = usert[0]._id; 
-        return user;
+            return usert[0]._id; 
         }
     });
     }

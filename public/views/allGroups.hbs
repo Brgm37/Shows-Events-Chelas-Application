@@ -1,18 +1,18 @@
 
 <header class="headerAllGroups">
-    <a href="/home">Home Page</a>
-    <h1>These are all Groups</h1>
-    <p>Seca Application IPW 2023/2024</p>
+    <a href="./home">SingOut</a>
 </header>
 
-<div class="createGroupDiv">{{> newGroup token=token }}</div>
+{{> header pageTitle="AllGroups"}}
+
+<div class="createGroupDiv">{{> newGroup userId=userId }}</div>
 
 <hr>
 
 <section class="sectionMain">
     {{#each groups}}
         <section class="groupSection">
-            {{> groupSection token=../token group=this}}
+            {{> groupSection userId=userId group=this}}
         </section>
     {{/each}}
 </section>

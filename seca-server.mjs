@@ -12,8 +12,8 @@ import secaServicesInit from './seca-services.mjs';
 const INDEX_GROUPS = 'groups';
 const INDEX_USERS = 'users';
 
-const secaDataUSers = secaDataElasticInit(INDEX_GROUPS);
-const secaDataGroups = secaDataElasticInit(INDEX_USERS);
+const secaDataUSers = secaDataElasticInit(INDEX_USERS);
+const secaDataGroups = secaDataElasticInit(INDEX_GROUPS);
 const secaServices = secaServicesInit(secaDataUSers, secaDataGroups);
 //const secaApi = secaApiInit(secaServices);
 const secaSite = secaWebInit(secaServices);
@@ -22,7 +22,6 @@ const port = 3000;
 
 const currentFileDir = url.fileURLToPath(new URL('.', import.meta.url));
 
-console.log('Setting up server');
 const app = express();
 
 app.use(express.static(`${currentFileDir}/public`, { type: 'text/css' }));
@@ -31,15 +30,35 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files (CSS, images, etc.)
-app.use('/public', express.static(path.join(currentFileDir, 'public')));
+app.use('/site', express.static(path.join(currentFileDir, 'public')));
 
 // Set up Handlebars as the view engine
 app.set('view engine', 'hbs');
 const viewDir = path.join(currentFileDir, 'public', 'views');
+
 app.set('views', viewDir);
 hbs.registerPartials(path.join(viewDir, 'partials'));
-
+hbs.registerHelper('add', function(a, b){
+    return Number(a)+Number(b);
+})
+hbs.registerHelper('sub', function(a, b){
+    return Number(a)-Number(b);
+})
+hbs.registerHelper('gt', function(a, b){
+    return a > b;
+})
 app.get('/site/home', secaSite.makeHomePage);
+app.get('/site/signIn', secaSite.singIn);
+app.get('/site/allGroups', secaSite.allGroups);
+app.post('/site/signUp', secaSite.signUp);
+app.post('/site/insertGroup', secaSite.createGroup);
+app.get('/site/details/:userId/:groupId', secaSite.showDetails);
+app.post('/site/updateGroup/:userId/:groupId', secaSite.updateGroup);
+app.post('/site/groups/delete/:userId/:groupId', secaSite.deleteGroup);
+app.get('/site/events/:userId/:groupId', secaSite.showEvent);
+app.post('/site/groups/addEvent/:userId/:groupId/:eventId', secaSite.addEvent);
+app.post('/site/groups/event/delete/:userId/:groupId/:eventId', secaSite.deleteEvent);
+
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

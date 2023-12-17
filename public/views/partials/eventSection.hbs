@@ -1,5 +1,5 @@
-<form method="POST" action="site/groups/{{token}}/{{groupId}}/addEvent/{{event.id}}">
-    <input type="hidden" name="eventId" value="{{this.id}}"> <p>{{token}}</p>
+<form method="POST" action="/site/groups/addEvent/{{userId}}/{{groupId}}/{{event.id}}">
+    <input type="hidden" name="eventId" value="{{this.id}}"> <p>{{userId}}</p>
     <strong>{{this.name}}</strong>
     <input type="hidden" name="eventName" value="{{this.name}}">
     <p>Data: {{this.date}}</p>

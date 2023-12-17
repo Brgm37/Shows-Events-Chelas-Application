@@ -1,16 +1,21 @@
 
 <h1>Group Details</h1>
 
+<header class="headerAllGroups">
+    <a href="/site/home">SingOut</a>
+    <a href="/site/allGroups?userId={{userId}}">AllGroups</a>
+</header>
 
-<form class="form" method="post" action="/updateGroup/{{token}}/{{group.groupId}}/{{group.name}}/{{group.description}}">
+
+<form class="form" method="POST" action="/site/updateGroup/{{userId}}/{{group.groupId}}">
     <p>Name: <input type="text" value="{{group.name}}" name="groupName"></p>
     <p>Description: <input type="text" value="{{group.description}}" name="groupDescription"></p>
     <input type="submit" value="Update Group">
 </form>
-<form class="form" method="POST" action='/site/groups/{{token}}/{{group.groupId}}/delete'>
+<form class="form" method="POST" action='/site/groups/delete/{{userId}}/{{group.groupId}}'>
     <input type="submit" value="Delete Group">
 </form>
-<form class="form" method="GET" action='/addEvent/{{token}}/{{group.groupId}}'>
+<form class="form" method="GET" action='/site/events/{{userId}}/{{group.groupId}}'>
     <input type="submit" value="Add Event">
 </form>
 
@@ -21,6 +26,7 @@
             <p>Data: {{this.date}}</p>
             <p>Gênero: {{this.genre}}</p>
             <img src="{{this.img}}">
+            {{> deleteEvent eventId = this.id userId=../userId groupId=../group.groupId}}
             {{!-- {{> eventSection event=this}} --}}
         </section>
     {{/each}}

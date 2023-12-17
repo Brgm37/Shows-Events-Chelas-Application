@@ -1,10 +1,10 @@
-body {
+.body {
     margin: 0;
     padding: 0;
     background-color: #f0f0f0;
 }
 
-header {
+.header {
     display: flex;
     width: 100%;
     flex-direction: column;
@@ -33,7 +33,7 @@ header {
     margin: 8px 0;
 }
 
-input {
+.input {
     width: 100%;
     padding: 10px; /* Smaller padding */
     margin: 1px 0;
@@ -42,7 +42,7 @@ input {
     border-radius: 6px; /* Smaller border-radius */
 }
 
-button {
+.button {
     background-color: #124b71;
     color: #fff;
     padding: 10px; /* Smaller padding */
@@ -54,16 +54,16 @@ button {
     margin: 0 auto;
 }
 
-button:hover {
+.button:hover {
     background-color: #0d3b58;
 }
 
 
 
-h2 {
+.h2 {
     font-size: 18px; 
 }
-h3 {
+.h3 {
     font-size: 18px; 
 }
 
