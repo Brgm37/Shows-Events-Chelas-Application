@@ -22,7 +22,18 @@ export default function(secaServices){
     showEvent,
     addEvent,
     deleteEvent,
+    dummy,
+    showEvents,
+  }
 
+  async function dummy(req, res){
+    try{
+      const id = await secaServices.dummy();
+      res.status(200).json(id);
+    }catch(error){
+      console.log(error)
+      res.status(500).json(error)
+    }
   }
 
   async function makeHomePage(req, res){
@@ -142,14 +153,35 @@ export default function(secaServices){
     }
   }
 
+  async function showEvents(req, res){
+    try{
+      const eventName = req.query.eventName;
+      const p = req.query.p || 0;
+      let events;
+      if(!eventName)
+        events = await secaServices.fetchPopularEvents(30, p);
+      else
+        events = await secaServices.fetchEventByName(eventName, 30, p);
+      res.render('showEvent', {events: events, p:p, eventName: eventName});
+    }catch(error){
+      console.error(error);
+      res.render('error', {code: error.code, description: error.description});
+    }
+  }
+
   async function addEvent(req, res){
     try{
+      console.log();
       const userId = req.params.userId;
       const groupId = req.params.groupId;
       const eventId = req.params.eventId;
+      console.log(`userId: ${userId}`);
+      console.log(`groupId: ${groupId}`);
+      console.log(`eventId: ${eventId}`);
       await secaServices.addEvent(groupId, userId, eventId);
       res.redirect(`/site/events/${userId}/${groupId}`);
     }catch(error){
+      console.log(error);
       res.render('error', {code: error.code, description: error.description});
     }
   }

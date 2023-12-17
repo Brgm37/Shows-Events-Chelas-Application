@@ -1,25 +1,35 @@
-import tmEventsData from './tm-events-data.mjs';
-import * as secaServices from './seca-services.mjs'
 
-const secaApi = {
 
-    async getPopularEvents(req, res){
-       try{
-        /*
-        if (!secaServices.default.isValidToken(req.query.token)){
-            return res.status(403).json({msg : 'unreconized token'});
+export default function(secaServices){
+    if(!secaServices){
+        throw errors.INVALID_ARGUMENT("secaServices");
+    }
+
+    return{
+        getPopularEvents,
+        searchEvents,
+        getGroups,
+        getGroup,
+        postGroup,
+        postUser,
+        editGroup,
+        deleteGroup,
+        deleteEvent
+    }
+
+    async function getPopularEvents(req, res){
+        try{
+         const s = req.query.s || 30;
+         const p = req.query.p || 1;
+         let popularEventData = await tmEventsData.fetchPopularEvent(s, p);   //string .json com a response
+         return res.status(200).json({msg : popularEventData});               //retorna uma resposta com o código 200, e com a string .json ao cliente
+        }catch(error){
+         console.error('Error fetching popular events:', error);
+         return res.status(404).json({error : error})
         }
-        */
-        const s = req.query.s || 30;
-        const p = req.query.p || 1;
-        let popularEventData = await tmEventsData.fetchPopularEvent(s, p);   //string .json com a response
-        return res.status(200).json({msg : popularEventData});               //retorna uma resposta com o código 200, e com a string .json ao cliente
-       }catch(error){
-        console.error('Error fetching popular events:', error);
-        return res.status(404).json({error : error})
-       }
-    },
-    async searchEvents(req, res){
+    }
+
+    async function searchEvents(req, res){
         try{
             /*
             if (!secaServices.default.isValidToken(req.query.token)){
@@ -39,8 +49,9 @@ const secaApi = {
         console.error('Error fetching popular events:', error);
         return res.status(404).json({error : error});
        }
-    },
-    async getGroups(req, res){
+    }
+
+    async function getGroups(req, res){
         try{
             const token = req.query.token
             if (!secaServices.default.isValidToken(token)){
@@ -52,8 +63,9 @@ const secaApi = {
             console.error('Error getting the groups:', error);
             return res.status(500).json({error: 'Internal server Error'});
         }
-    },
-    async getGroup(req, res){
+    }
+
+    async function getGroup(req, res){
         try{
             const token = req.query.token
             if (!secaServices.default.isValidToken(token)){
@@ -73,8 +85,9 @@ const secaApi = {
             console.error('Error getting the group:', error);
             return res.status(500).json({error: 'Internal server Error'})
         }
-    },
-    async postGroup(req, res){
+    }
+
+    async function postGroup(req, res){
         try{
             const token = req.query.IdUser
             if (!secaServices.default.isValidToken(token)){
@@ -92,8 +105,9 @@ const secaApi = {
             console.error('Error processing the post request', error);
             return res.status(500).json({error: error});
         }
-    },
-    async postUser(req, res){
+    }
+
+    async function postUser(req, res){
         try{
             const userName = req.query.userName;
             if (userName == null)
@@ -106,8 +120,9 @@ const secaApi = {
             console.error('Error processing the post request', error);
             return res.status(500).json({error: error});
         }
-    },
-    async editGroup(req, res){
+    }
+
+    async function editGroup(req, res){
         try{
 
             const token = req.query.token;
@@ -144,8 +159,9 @@ const secaApi = {
             console.error('Error processing the post request', error);
             res.status(500).json({error: error});
         }
-    },
-    async deleteGroup(req, res){
+    }
+
+    async function deleteGroup(req, res){
         try{
             const token = req.query.token;
             if(!secaServices.default.isValidToken(token)) 
@@ -162,8 +178,9 @@ const secaApi = {
             console.error('Error processing the post request', error);
             res.status(500).json({error: error});
         }
-    },
-    async deleteEvent(req, res){
+    }
+
+    async function deleteEvent(req, res){
         try{
             const token = req.query.token;
             if(!secaServices.default.isValidToken(token))
@@ -182,6 +199,6 @@ const secaApi = {
             res.status(500).json({error: error});
         }
     }
-};
 
-export default secaApi;
+}
+

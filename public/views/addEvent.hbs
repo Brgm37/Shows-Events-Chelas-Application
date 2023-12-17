@@ -6,9 +6,7 @@
         <p>EventName<input type="text" {{#if eventName}} value="{{eventName}}" {{/if}} name="eventName"></p>
         <input type="submit" value="Search Event">   
     </form>
-    <from method="GET" action="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}">
-        <input type="submit" value="PopularEvents">
-    </from>
+    <a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}" class="button">PopularEvents</a>
 </header>
     {{#if (gt p 0)}}
         <a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}/?p={{sub p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">PreviousPage</a>

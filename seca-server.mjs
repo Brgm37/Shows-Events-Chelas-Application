@@ -15,7 +15,7 @@ const INDEX_USERS = 'users';
 const secaDataUSers = secaDataElasticInit(INDEX_USERS);
 const secaDataGroups = secaDataElasticInit(INDEX_GROUPS);
 const secaServices = secaServicesInit(secaDataUSers, secaDataGroups);
-//const secaApi = secaApiInit(secaServices);
+const secaApi = secaApiInit(secaServices);
 const secaSite = secaWebInit(secaServices);
 
 const port = 3000;
@@ -40,13 +40,15 @@ app.set('views', viewDir);
 hbs.registerPartials(path.join(viewDir, 'partials'));
 hbs.registerHelper('add', function(a, b){
     return Number(a)+Number(b);
-})
+});
 hbs.registerHelper('sub', function(a, b){
     return Number(a)-Number(b);
-})
+});
 hbs.registerHelper('gt', function(a, b){
-    return a > b;
-})
+    return Number(a) > Number(b);
+});
+
+//Site route
 app.get('/site/home', secaSite.makeHomePage);
 app.get('/site/signIn', secaSite.singIn);
 app.get('/site/allGroups', secaSite.allGroups);
@@ -58,7 +60,20 @@ app.post('/site/groups/delete/:userId/:groupId', secaSite.deleteGroup);
 app.get('/site/events/:userId/:groupId', secaSite.showEvent);
 app.post('/site/groups/addEvent/:userId/:groupId/:eventId', secaSite.addEvent);
 app.post('/site/groups/event/delete/:userId/:groupId/:eventId', secaSite.deleteEvent);
+app.post('/', secaSite.dummy);
+app.get('/site/events/search', secaSite.showEvents);
 
+//Api route
+app.get('/api/events/popular', secaApi.getPopularEvents);          
+app.get('/api/:groupId/events/search', secaApi.searchEvents);             
+app.get('/api/events/search', secaApi.searchEvents);                
+app.get('/api/groups', secaApi.getGroups);                          
+app.get('/api/groups/group', secaApi.getGroup);                     
+app.post('/api/groups', secaApi.postGroup);                         
+app.put('/api/groups/group', secaApi.editGroup);                    
+app.delete('/api/groups', secaApi.deleteGroup);                     
+app.delete('/api/groups/group', secaApi.deleteEvent);                
+app.post('/api/createUser', secaApi.postUser);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

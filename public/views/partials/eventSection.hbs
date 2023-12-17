@@ -12,7 +12,8 @@
     <input type="hidden" name="eventSubGenre" value="{{this.subGenre}}">
     <p>Segmento: {{this.segment}}</p>
     <input type="hidden" name="eventSegment" value="{{this.segment}}">
-    <p>Imagem: {{this.image}}</p>
+    {{!-- <p>Imagem: {{this.image}}</p> --}}
+    <img src="{{this.image}}" alt="">
     <input type="hidden" name="image" value="{{this.image}}">
     <input type="submit" value="Add Event">
 </form>

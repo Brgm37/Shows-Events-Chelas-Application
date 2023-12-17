@@ -1,6 +1,5 @@
 import tmEventsData from './tm-events-data.mjs';
 import errors from './common/errors.mjs';
-import e from 'cors';
 
 class Group {
     constructor(name, description, userId) {
@@ -36,12 +35,15 @@ export default function(usersTable, groupsTable) {
         deleteEvent,
         addEvent,
         signIn,
+        signUp,
+        dummy
     }
 
     async function fetchEventById(eventId){
         try{
             return await tmEventsData.fetchEventById(eventId);
         }catch(erro){
+            console.log(erro);
             throw errors.INTERNAL_SERVER_ERROR("fetchEventById", erro);
         }
     }
@@ -159,6 +161,7 @@ export default function(usersTable, groupsTable) {
             if(groupUpdate.userId != userId)
                 throw errors.NOT_AUTHORIZED(eventId, groupId);
             groupUpdate.events.push(event);
+            console.log(groupUpdate);
             return await groupsTable.updateGroup(groupUpdate);
         }catch(erro){
             throw errors.NOT_FOUND(groupId);
@@ -188,5 +191,11 @@ export default function(usersTable, groupsTable) {
         }catch(erro){
             throw errors.INTERNAL_SERVER_ERROR(erro);
         }
+    }
+    async function dummy(){
+        const group = new Group('dummy', 'dummy', 'BisueIwBsZ85YzGhG47_');
+        const event = await fetchEventById('G5vYZ9YBkpvBo');
+        group.events.push(event);
+        return await groupsTable.insertGroup(group);
     }
 };

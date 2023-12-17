@@ -25,7 +25,10 @@
             <strong>{{this.name}}</strong>
             <p>Data: {{this.date}}</p>
             <p>Gênero: {{this.genre}}</p>
-            <img src="{{this.img}}">
+            <p>Sub-Gênero: {{this.subGenre}}</p>
+            <p>Segmento: {{this.segment}}</p>
+            <p>Vendas: {{this.sales}}</p>
+            <img src="{{this.image}}">
             {{> deleteEvent eventId = this.id userId=../userId groupId=../group.groupId}}
             {{!-- {{> eventSection event=this}} --}}
         </section>
