@@ -1,8 +1,11 @@
-
-<strong>{{event.name}}</strong>
+<div class="add-event-form">
+<h3>{{event.name}}</h3>
 <p>Data: {{event.date}}</p>
 <p>Vendas: {{event.sales}}</p>
 <p>Gênero: {{event.genre}}</p>
 <p>Sub-Gênero: {{event.subGenre}}</p>
 <p>Segmento: {{event.segment}}</p>
-<img src="{{event.image}}" alt="">
+<div class="event-image-container">
+    <img src="{{this.image}}" alt="" class="event-image">
+</div>
+</div>

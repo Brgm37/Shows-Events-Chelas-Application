@@ -1,73 +1,44 @@
-{{!-- <h1>Group Details</h1>
-
-<header class="headerAllGroups">
-    <a href="/site/home">SingOut</a>
-    <a href="/site/allGroups?userId={{userId}}">AllGroups</a>
-</header>
-
-
-<form class="form" method="POST" action="/site/updateGroup/{{userId}}/{{group.groupId}}">
-    <p>Name: <input type="text" value="{{group.name}}" name="groupName"></p>
-    <p>Description: <input type="text" value="{{group.description}}" name="groupDescription"></p>
-    <input type="submit" value="Update Group">
-</form>
-<form class="form" method="POST" action='/site/groups/delete/{{userId}}/{{group.groupId}}'>
-    <input type="submit" value="Delete Group">
-</form>
-<form class="form" method="GET" action='/site/events/{{userId}}/{{group.groupId}}'>
-    <input type="submit" value="Add Event">
-</form>
-
-<section class="sectionMain">
-    {{#each group.events}}
-        <section class="eventSection">
-            <strong>{{this.name}}</strong>
-            <p>Data: {{this.date}}</p>
-            <p>Gênero: {{this.genre}}</p>
-            <p>Sub-Gênero: {{this.subGenre}}</p>
-            <p>Segmento: {{this.segment}}</p>
-            <p>Vendas: {{this.sales}}</p>
-            <img src="{{this.image}}">
-            {{> deleteEvent eventId = this.id userId=../userId groupId=../group.groupId}}
-            
-        </section>
-    {{/each}}
-</section> --}}
 {{> header pageTitle="SECA" class="header"}}
-
-
-
 <header class="headerAllGroups">
   <a href="/site/home">Sign Out</a>
   <a> | </a>
   <a href="/site/allGroups?userId={{userId}}">All Groups</a>
 </header>
 
-<form class="form" method="POST" action="/site/updateGroup/{{userId}}/{{group.groupId}}">
-  <p>Name: <input type="text" value="{{group.name}}" name="groupName"></p>
-  <p>Description: <input type="text" value="{{group.description}}" name="groupDescription"></p>
-  <input type="submit" value="Update Group">
+<form class="container" method="POST" action="/site/updateGroup/{{userId}}/{{group.groupId}}">
+  <h3>Update Group</h3>
+  <p>Name: <input type="text" value="{{group.name}}" name="groupName" maxlength="15"></p>
+  <p>Description: <input type="text" value="{{group.description}}" name="groupDescription" maxlength="80"></p>
+  <button type="submit">Update</button>
 </form>
 
-<form class="form" method="POST" action='/site/groups/delete/{{userId}}/{{group.groupId}}'>
+<hr>
+
+<div class="details-buttons">
+<form  method="POST" action='/site/groups/delete/{{userId}}/{{group.groupId}}'>
   <input type="submit" value="Delete Group">
 </form>
 
-<form class="form" method="GET" action='/site/events/{{userId}}/{{group.groupId}}'>
+<form  method="GET" action='/site/events/{{userId}}/{{group.groupId}}'>
   <input type="submit" value="Add Event">
 </form>
+</div>
 
 <section class="sectionMain">
   {{#each group.events}}
-    <section class="eventSection">
-      <strong>{{this.name}}</strong>
+    <section class="add-event-form">
+      <h3>{{this.name}}</h3>
             <p>Data: {{this.date}}</p>
             <p>Gênero: {{this.genre}}</p>
             <p>Sub-Gênero: {{this.subGenre}}</p>
             <p>Segmento: {{this.segment}}</p>
             <p>Vendas: {{this.sales}}</p>
-            <img src="{{this.image}}">
-      {{> deleteEvent eventId=this.id userId=../userId groupId=../group.groupId}}
+            <div class="event-image-container">
+              <img src="{{this.image}}" alt="" class="event-image">
+            </div>
+        <div class="add-to-group-container">
+          {{> deleteEvent eventId=this.id userId=../userId groupId=../group.groupId}}
+      </div>
     </section>
   {{/each}}
 </section>

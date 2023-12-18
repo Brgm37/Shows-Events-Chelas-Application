@@ -1,6 +1,6 @@
-<form method="POST" action="/site/groups/addEvent/{{userId}}/{{groupId}}/{{event.id}}">
-    <input type="hidden" name="eventId" value="{{this.id}}"> <p>{{userId}}</p>
-    <strong>{{this.name}}</strong>
+<form class="add-event-form" method="POST" action="/site/groups/addEvent/{{userId}}/{{groupId}}/{{event.id}}">
+    <input type="hidden" name="eventId" value="{{this.id}}">
+    <h3>{{this.name}}</h3>
     <input type="hidden" name="eventName" value="{{this.name}}">
     <p>Data: {{this.date}}</p>
     <input type="hidden" name="eventDate" value="{{this.date}}">
@@ -12,8 +12,11 @@
     <input type="hidden" name="eventSubGenre" value="{{this.subGenre}}">
     <p>Segmento: {{this.segment}}</p>
     <input type="hidden" name="eventSegment" value="{{this.segment}}">
-    {{!-- <p>Imagem: {{this.image}}</p> --}}
-    <img src="{{this.image}}" alt="">
+    <div class="event-image-container">
+        <img src="{{this.image}}" alt="" class="event-image">
+    </div>
     <input type="hidden" name="image" value="{{this.image}}">
-    <input type="submit" value="Add Event">
+    <div class="add-to-group-container">
+        <input type="submit" value="Add to Group">
+    </div>
 </form>

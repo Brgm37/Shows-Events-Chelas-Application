@@ -1,21 +1,28 @@
 {{> header pageTitle="SECA" class="header"}}
  <header class="headerAllGroups">
   <a href="/site/home">Sign Out</a>
+  <a href="/site/home"> | </a>
   <a href="/site/allGroups?userId={{userId}}">All Groups</a>
   </header>
 
   <h3>Search for an Event</h3>
+  <div class="container">
   <form method="GET" action="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}">
-    <p>Event Name<input type="text" {{#if eventName}} value="{{eventName}}" {{/if}} name="eventName"></p>
-    <input type="submit" value="Search Event">
+    <p>Search in events:<input type="text" {{#if eventName}} value="{{eventName}}" {{/if}} name="eventName"></p>
+    <button type="submit">Search</button>
   </form>
-  <a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}" class="button">Popular Events</a>
+  </div>
 </header>
 
-{{#if (gt p 0)}}
-  <a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}/?p={{sub p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">Previous Page</a>
-{{/if}}
-<a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}/?p={{add p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">Next Page</a>
+<div class="page-buttons">
+  <a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}" class="button">Popular Events</a>
+  <div class="pagination-buttons">
+    {{#if (gt p 0)}}
+      <a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}/?p={{sub p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">Previous Page</a>
+    {{/if}}
+    <a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}/?p={{add p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">Next Page</a>
+  </div>
+</div>
 
 {{#each events}}
   <hr>

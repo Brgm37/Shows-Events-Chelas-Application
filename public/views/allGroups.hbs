@@ -2,16 +2,14 @@
 
 <header class="headerAllGroups">
     <a href="./home">Sign Out</a>
-    </header>
+</header>
 
-  <div class="createGroupDiv">{{> newGroup userId=userId }}</div>
+<div class="createGroupDiv">{{> newGroup userId=userId }}</div>
 
-  <hr>
+<hr>
 
-  <section class="sectionMain">
+<section class="sectionMain">
     {{#each groups}}
-      <section class="groupSection">
-        {{> groupSection userId=userId group=this}}
-      </section>
+      {{> groupSection userId=userId group=this}}
     {{/each}}
-  </section>
+</section>

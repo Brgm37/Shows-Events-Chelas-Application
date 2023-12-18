@@ -1,9 +1,8 @@
-<header class="groupHeader">
-    <h1>{{group.name}}</h1>
-    <p>{{group.description}}</p>
-  </header>
-<article class="groupSection">
-  <form method="GET" action="/site/details/{{userId}}/{{group.groupId}}">
-    <input type="submit" value="Details" class="detailsButton">
-  </form>
-</article>
+<a href="/site/details/{{userId}}/{{group.groupId}}" class="groupLink">
+  <section class="groupSection">
+      <header class="groupHeader">
+          <h1>{{group.name}}</h1>
+          <p>Description: {{group.description}}</p>
+      </header>
+  </section>
+</a>

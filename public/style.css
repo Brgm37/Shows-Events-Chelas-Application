@@ -71,7 +71,7 @@ button:hover {
   margin: 0;
 }
 
-/* Navigation styles */
+
 .navigation {
   margin-top: 20px;
 }
@@ -91,7 +91,7 @@ button:hover {
   color: #555;
 }
 
-/* allGroup Styles */
+
 .headerAllGroups {
   background-color: #333;
   color: #fff;
@@ -124,11 +124,15 @@ hr {
   justify-content: space-around;
 }
 
-  /*groupSection Style*/
+.groupSection,
+.groupHeader {
+    width: 200px; 
+    height: 100px;
+}
 
   .groupSection {
-  width: calc(20% - 10px);
-  background-color: #fff;
+  width: 200px;
+  background-color: #333;
   padding: 20px;
   margin: 5px;
   border-radius: 8px;
@@ -149,17 +153,19 @@ hr {
 .groupHeader h1 {
   font-size: 18px;
   margin: 10px;
-  color: #333;
+  color: #fff;
+  text-align: center;
 }
 
 .groupHeader p {
   margin: 10px 0;
-  color: #666;
+  color: #bdbaba;
+  word-wrap: break-word;
 }
 
 .detailsButton {
   background-color: #4caf50;
-  color: #fff;
+  color: #333;
   padding: 10px 15px;
   border: none;
   border-radius: 4px;
@@ -171,85 +177,40 @@ hr {
   background-color: #45a049;
 }  
 
-  /*section details style*/
-.sectionMain {
+.groupLink {
+  text-decoration: none; 
+  color: inherit; 
+  cursor: pointer; 
+}
+
+.groupLink:hover .groupSection {
+  background-color: #282828af;
+}
+
+.details-buttons {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: space-between;
+  margin-top: 20px; 
 }
 
-.eventSection {
-  width: calc(33.33% - 20px);
-  margin: 10px;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+.details-buttons form {
+  text-align: center;
+  flex: 1; 
 }
 
-.eventSection strong {
-  display: block;
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.eventSection p {
-  margin: 5px 0;
-  color: #666;
-}
-
-.eventSection img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
-}
-
-input[type="submit"] {
-  display: block;
-  margin: 0 auto;
+.details-buttons input[type="submit"] {
   background-color: #4caf50;
   color: #333;
   padding: 10px 15px;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
+  width: 100%; 
+  margin: 5px 0; 
 }
 
-input[type="submit"]:hover {
+.details-buttons input[type="submit"]:hover {
   background-color: #45a049;
-}
-
-.sectionMain {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-}
-
-.eventSection {
-  width: calc(33.33% - 20px);
-  margin: 10px;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-}
-
-.eventSection strong {
-  display: block;
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.eventSection p {
-  margin: 5px 0;
-  color: #666;
-}
-
-.eventSection img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
 }
 
 
@@ -282,3 +243,99 @@ input[type="submit"]:hover {
 .btn-primary:hover {
   background-color: #45a049;
 }
+
+
+
+
+
+.add-event-form {
+  max-width: 400px;
+  margin: 20px auto;
+  background-color: #f4f4f4d4;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-event-form strong {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.add-event-form p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.add-event-form .event-image-container {
+  display: flex;
+  justify-content: center;
+}
+
+.add-event-form .event-image {
+  width: 200px;    
+  height: 150px;   
+  object-fit: cover; 
+  border-radius: 4px;
+  margin: 10px 0;   
+}
+
+.add-event-form .add-to-group-container {
+  display: flex;
+  justify-content: center;
+}
+
+.add-event-form input[type="submit"] {
+  background-color: #4caf50;
+  color: #333;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.add-event-form input[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+.page-buttons {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.page-buttons a {
+  display: inline-block;
+  padding: 10px 15px;
+  margin: 0 5px;
+  text-decoration: none;
+  color: #333;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.page-buttons a.button {
+  background-color: #4caf50;
+}
+
+.page-buttons .pagination-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.page-buttons .pagination-buttons a {
+  flex-grow: 1;
+}
+
+.page-buttons a.btn-primary {
+  background-color: #4caf50;
+}
+
+.page-buttons a:hover {
+  background-color: #45a049;
+}
+
+
+
