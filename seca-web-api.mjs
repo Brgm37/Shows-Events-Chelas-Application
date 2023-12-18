@@ -1,3 +1,13 @@
+import CODE from './common/code.mjs';
+import errors from './common/errors.mjs';
+
+function readErrorCode(code){
+    return (code != undefined) ? code : ERROR_CODES.INTERNAL_SERVER_ERROR;
+}
+
+function readErrorDesc(erro){
+    return (erro.description != undefined) ? erro.description : "Internal Server Error";
+}
 
 
 export default function(secaServices){
@@ -19,91 +29,85 @@ export default function(secaServices){
 
     async function getPopularEvents(req, res){
         try{
-         const s = req.query.s || 30;
-         const p = req.query.p || 1;
-         let popularEventData = await tmEventsData.fetchPopularEvent(s, p);   //string .json com a response
-         return res.status(200).json({msg : popularEventData});               //retorna uma resposta com o código 200, e com a string .json ao cliente
-        }catch(error){
-         console.error('Error fetching popular events:', error);
-         return res.status(404).json({error : error})
-        }
+            const s = req.query.s || 30;
+            const p = req.query.p || 1;
+            let popularEventData = await secaServices().fetchPopularEvents(s, p);
+            return res.status(CODE.SUCCESS).json({msg : popularEventData});
+           }catch(error){
+            console.error('Error fetching popular events:', error);
+            return res.status(readErrorCode(error.code)).json({error : readErrorDesc(error)});
+           }
     }
 
     async function searchEvents(req, res){
         try{
-            /*
-            if (!secaServices.default.isValidToken(req.query.token)){
-                return res.status(403).json({msg : 'unreconized token'});
-            }
-            */
-            const eventName = req.params.eventName;          //extrai o parâmetro eventName do URL passado em req
-            const s = req.params.s || 30;
-            const p = req.params.p || 1;
+            const eventName = req.query.eventName;          //extrai o parâmetro eventName do URL passado em req
+            const s = req.query.s || 30;
+            const p = req.query.p || 1;
             if (!eventName){
-                return res.status(400).json({error: 'eventName parameter is required for event search'});
+                return res.status(ERROR_CODES.INVALID_ARGUMENT).json({error: 'eventName parameter is required for event search'});
             }else{
-                const popularEventData = await tmEventsData.fetchEventByName(eventName, s, p);        //string .json com a response
-                return res.render('addEvent', {events: popularEventData, style: 'addEvent.css'});                                  //retorna uma resposta com o código 200, e com a string .json ao cliente
+                const popularEventData = await secaServices().fetchEventByName(eventName, s, p);        //string .json com a response
+                return res.status(CODE.SUCCESS).json(popularEventData);                                  //retorna uma resposta com o código 200, e com a string .json ao cliente
             }
        }catch(error){
-        console.error('Error fetching popular events:', error);
-        return res.status(404).json({error : error});
+        console.error('Error fetching events by name:', error);
+        return res.status(readErrorCode(error.code)).json({error : readErrorDesc(error)});
        }
     }
 
     async function getGroups(req, res){
         try{
-            const token = req.query.token
-            if (!secaServices.default.isValidToken(token)){
-                return res.status(403).json({msg : 'unreconized token'});
+            const userId = req.query.userId
+            if (!await secaServices().isValid(userId)){
+                const error = UNAUTORIZED(userId);
+                return res.status(error.code).json({error: error.description});
             }
-            const allGroups = secaServices.default.allGroups(token);        //map with all groups
-            return res.status(200).json(allGroups);
+            const allGroups =  await secaServices().allGroups(userId);        //map with all groups
+            return res.status(CODE.SUCCESS).json(allGroups);
         }catch(error){
             console.error('Error getting the groups:', error);
-            return res.status(500).json({error: 'Internal server Error'});
+            return res.status(readErrorCode(error.code)).json({error : readErrorDesc(error)});
         }
     }
 
     async function getGroup(req, res){
         try{
-            const token = req.query.token
-            if (!secaServices.default.isValidToken(token)){
-                return res.status(403).json({msg :'unreconized token'});
+            const userId = req.query.userId
+            if (!await secaServices().isValid(userId)){
+                const error = UNAUTORIZED(userId);
+                return res.status(error.code).json({error: error.description});
             }
             const groupId = req.query.groupId;               //extrai o parâmetro groupId do URL passado em req
             if (!groupId){
-                return res.status(400).json({error: 'GroupId parameter is required for group search'});
+                return res.status(ERROR_CODES.MISSING_PARAMETER).json({error: 'GroupId parameter is required for group search'});
             }else{
-                const group = secaServices.default.getGroup(groupId, token);
-                if (group != null)
-                    return res.status(200).json(group);
-                else 
-                    return res.status(404).json({msg : "Group not found for the user ", token});
+                const group = await secaServices().getGroup(groupId, userId);
+                return res.status(CODE.SUCCESS).json({msg: group});
             }
         }catch(error){
             console.error('Error getting the group:', error);
-            return res.status(500).json({error: 'Internal server Error'})
+            return res.status(readErrorCode(error.code)).json({error : readErrorDesc(error)});
         }
     }
 
     async function postGroup(req, res){
         try{
-            const token = req.query.IdUser
-            if (!secaServices.default.isValidToken(token)){
-                return res.status(403).json({msg :'unreconized token'});
+            const userId = req.query.userId;
+            if (!await secaServices().isValid(userId)){
+                const error = UNAUTORIZED(userId);
+                return res.status(error.code).json({error: error.description});
             }
             const name = req.query.name;
             const description = req.query.description;
             if (!name || !description){
-                return res.status(400).json({error:'Name parameter and description are required'});
+                return res.status(ERROR_CODES.INVALID_ARGUMENT).json({error:'Name parameter and description are required'});
             }
-            const postGroup = secaServices.default.createGroup(name, description, token);
-            if(postGroup == null) return res.status(409).json({ message:'Group already exists.'});
-            return res.status(201).json({ message:'Group created successfully.', groupId: postGroup, userId: token });
+            const postGroup = await secaServices().createGroup(name, description, userId);
+            return res.status(CODE.CREATED).json({ message:'Group created successfully.', group: postGroup });
         }catch(error){
             console.error('Error processing the post request', error);
-            return res.status(500).json({error: error});
+            return res.status(readErrorCode(error.code)).json({error : readErrorDesc(error)});
         }
     }
 
@@ -111,23 +115,22 @@ export default function(secaServices){
         try{
             const userName = req.query.userName;
             if (userName == null)
-                return res.status(400).json({error: 'userName parameter is required'});
-            const newUser = secaServices.default.createUser(userName);
-
-            if(newUser == null) return res.status(409).json({error: 'userName already exists'});
-            return res.status(201).json({msg: 'user created successfully', user: newUser.userName, userId: newUser.userId});
+                return res.status(ERROR_CODES.INVALID_ARGUMENT).json({error: 'userName parameter is required'});
+            const newUser = await secaServices().createUser(userName);
+            return res.status(CODE.CREATED).json({msg: 'user created successfully', user: newUser});
         }catch(error){
             console.error('Error processing the post request', error);
-            return res.status(500).json({error: error});
+            return res.status(readErrorCode(error.code)).json({error : readErrorDesc(error)});
         }
     }
 
     async function editGroup(req, res){
         try{
-
-            const token = req.query.token;
-            if (!secaServices.default.isValidToken(token)){
-                return res.status(403).json({msg :'unreconized token'});
+            
+            const userId = req.query.userId;
+            if (!await secaServices().isValid(userId)){
+                const error = UNAUTORIZED(userId);
+                return res.status(error.code).json({error: error.description});
             }
 
             const groupId = req.query.groupId;
@@ -136,67 +139,59 @@ export default function(secaServices){
             const newEventId = req.query.eventId || null;
 
             if(groupId == null){
-                return res.status(400).json({error:'groupId missing'});
+                return res.status(ERROR_CODES.INVALID_ARGUMENT).json({error:'groupId missing'});
             }
-            /*
-            if(!secaServices1.isValidName(userName) || !secaServices1.isValidGroup(groupName)){
-                return res.status(422).json({error: 'invalid userName or groupName'});
-            }
-            */
-            let newEvent;
-            if (newEventId != null) newEvent = await tmEventsData.fetchEventById(newEventId); else newEvent = null;
-            const change = secaServices.default.editGroup(groupId, newGroupName, newDescription, newEvent, token);
-            if(change == null) return res.status(403).json({error: 'no such group found'})
-            return res.status(201).json({
-                msg: 'group updated successfully',
-                groupId: groupId,
-                groupNewName: change.name,
-                groupNewDescription: change.description,
-                groupEvent : change.events
-            });
+            let change = null;
+            if (newGroupName != null || newDescription != null)
+                change = await secaServices().editGroup(groupId, newGroupName, newDescription, userId);
+            if (newEventId != null)
+                change = await secaServices().addEvent(groupId, userId, newEventId);
+            if (change != null)
+                return res.status(CODE.SUCCESS).json(change);
+            else
+                return res.status(CODE.NOT_MODIFIED);
  
         }catch(error){
             console.error('Error processing the post request', error);
-            res.status(500).json({error: error});
+            return res.status(readErrorCode(error.code)).json({error : readErrorDesc(error)});
         }
     }
 
     async function deleteGroup(req, res){
         try{
-            const token = req.query.token;
-            if(!secaServices.default.isValidToken(token)) 
-                return res.status(403).json({msg :'unreconized token'});
+            const userId = req.query.userId;
+            if(!await secaServices().isValid(userId)){
+                const error = UNAUTORIZED(userId);
+                return res.status(error.code).json({error: error.description});
+            }
             const groupId = req.query.groupId;
             if(groupId == null){
-                return res.status(400).json({error:'groupId missing'});
+                return res.status(ERROR_CODES.INVALID_ARGUMENT).json({error:'groupId missing'});
             }
-            if(secaServices.default.deleteGroup(groupId, token)){
-                return res.status(200).json({msg : `group ${groupId} has been removed`});
-            }else
-                return res.status(404).json({error : `user ${token} unnable to delete group ${groupId}`});
-        }catch(error){
+            const response = await secaServices().deleteGroup(groupId, userId);
+            return res.status(CODE.SUCCESS).json(response);
+            }catch(error){
             console.error('Error processing the post request', error);
-            res.status(500).json({error: error});
+            return res.status(readErrorCode(error.code)).json({error : readErrorDesc(error)});
         }
     }
 
     async function deleteEvent(req, res){
         try{
-            const token = req.query.token;
-            if(!secaServices.default.isValidToken(token))
-                return res.status(403).json({msg :'unreconized token'});
+            const userId = req.query.userId;
+            if(!await secaServices().isValid(userId)){
+                const error = UNAUTORIZED(userId);
+                return res.status(error.code).json({error: error.description});
+            }
             const groupId = req.query.groupId;
             const eventId = req.query.eventId;
             if (groupId == null || eventId == null)
-                return res.status(400).json({error : `groupId : ${groupId} and eventId : ${eventId} should be especified`});
-            if (secaServices.default.deleteEvent(groupId, token, eventId)){
-                return res.status(200).json({msg : `event ${eventId} has been removed from group ${groupId}`});
-            }else{
-                return res.status(403).json({error : `user ${token} unnable to delete event ${eventId} from group ${groupId}`})
-            }
+                return res.status(ERROR_CODES.INVALID_ARGUMENT).json({error : `groupId : ${groupId} and eventId : ${eventId} should be especified`});
+            const response = await secaServices().deleteEvent(groupId, eventId, userId);
+            return res.status(CODE.SUCCESS).json(response);
         }catch(error){
             console.error('Error processing the post request', error);
-            res.status(500).json({error: error});
+            return res.status(readErrorCode(error.code)).json({error : readErrorDesc(error)});
         }
     }
 
