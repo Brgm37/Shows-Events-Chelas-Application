@@ -31,7 +31,7 @@ export default function(secaServices){
         try{
             const s = req.query.s || 30;
             const p = req.query.p || 1;
-            let popularEventData = await secaServices().fetchPopularEvents(s, p);
+            let popularEventData = await secaServices.fetchPopularEvents(s, p);
             return res.status(CODE.SUCCESS).json({msg : popularEventData});
            }catch(error){
             console.error('Error fetching popular events:', error);
@@ -47,7 +47,7 @@ export default function(secaServices){
             if (!eventName){
                 return res.status(ERROR_CODES.INVALID_ARGUMENT).json({error: 'eventName parameter is required for event search'});
             }else{
-                const popularEventData = await secaServices().fetchEventByName(eventName, s, p);        //string .json com a response
+                const popularEventData = await secaServices.fetchEventByName(eventName, s, p);        //string .json com a response
                 return res.status(CODE.SUCCESS).json(popularEventData);                                  //retorna uma resposta com o código 200, e com a string .json ao cliente
             }
        }catch(error){
@@ -59,11 +59,11 @@ export default function(secaServices){
     async function getGroups(req, res){
         try{
             const userId = req.query.userId
-            if (!await secaServices().isValid(userId)){
+            if (!await secaServices.isValidToken(userId)){
                 const error = UNAUTORIZED(userId);
                 return res.status(error.code).json({error: error.description});
             }
-            const allGroups =  await secaServices().allGroups(userId);        //map with all groups
+            const allGroups =  await secaServices.allGroups(userId);        //map with all groups
             return res.status(CODE.SUCCESS).json(allGroups);
         }catch(error){
             console.error('Error getting the groups:', error);
@@ -74,7 +74,7 @@ export default function(secaServices){
     async function getGroup(req, res){
         try{
             const userId = req.query.userId
-            if (!await secaServices().isValid(userId)){
+            if (!await secaServices.isValidToken(userId)){
                 const error = UNAUTORIZED(userId);
                 return res.status(error.code).json({error: error.description});
             }
@@ -82,7 +82,7 @@ export default function(secaServices){
             if (!groupId){
                 return res.status(ERROR_CODES.MISSING_PARAMETER).json({error: 'GroupId parameter is required for group search'});
             }else{
-                const group = await secaServices().getGroup(groupId, userId);
+                const group = await secaServices.getGroup(groupId, userId);
                 return res.status(CODE.SUCCESS).json({msg: group});
             }
         }catch(error){
@@ -94,7 +94,7 @@ export default function(secaServices){
     async function postGroup(req, res){
         try{
             const userId = req.query.userId;
-            if (!await secaServices().isValid(userId)){
+            if (!await secaServices.isValidToken(userId)){
                 const error = UNAUTORIZED(userId);
                 return res.status(error.code).json({error: error.description});
             }
@@ -103,7 +103,7 @@ export default function(secaServices){
             if (!name || !description){
                 return res.status(ERROR_CODES.INVALID_ARGUMENT).json({error:'Name parameter and description are required'});
             }
-            const postGroup = await secaServices().createGroup(name, description, userId);
+            const postGroup = await secaServices.createGroup(name, description, userId);
             return res.status(CODE.CREATED).json({ message:'Group created successfully.', group: postGroup });
         }catch(error){
             console.error('Error processing the post request', error);
@@ -116,7 +116,7 @@ export default function(secaServices){
             const userName = req.query.userName;
             if (userName == null)
                 return res.status(ERROR_CODES.INVALID_ARGUMENT).json({error: 'userName parameter is required'});
-            const newUser = await secaServices().createUser(userName);
+            const newUser = await secaServices.createUser(userName);
             return res.status(CODE.CREATED).json({msg: 'user created successfully', user: newUser});
         }catch(error){
             console.error('Error processing the post request', error);
@@ -128,7 +128,7 @@ export default function(secaServices){
         try{
             
             const userId = req.query.userId;
-            if (!await secaServices().isValid(userId)){
+            if (!await secaServices.isValidToken(userId)){
                 const error = UNAUTORIZED(userId);
                 return res.status(error.code).json({error: error.description});
             }
@@ -143,9 +143,9 @@ export default function(secaServices){
             }
             let change = null;
             if (newGroupName != null || newDescription != null)
-                change = await secaServices().editGroup(groupId, newGroupName, newDescription, userId);
+                change = await secaServices.editGroup(groupId, newGroupName, newDescription, userId);
             if (newEventId != null)
-                change = await secaServices().addEvent(groupId, userId, newEventId);
+                change = await secaServices.addEvent(groupId, userId, newEventId);
             if (change != null)
                 return res.status(CODE.SUCCESS).json(change);
             else
@@ -160,7 +160,7 @@ export default function(secaServices){
     async function deleteGroup(req, res){
         try{
             const userId = req.query.userId;
-            if(!await secaServices().isValid(userId)){
+            if(!await secaServices.isValidToken(userId)){
                 const error = UNAUTORIZED(userId);
                 return res.status(error.code).json({error: error.description});
             }
@@ -168,7 +168,7 @@ export default function(secaServices){
             if(groupId == null){
                 return res.status(ERROR_CODES.INVALID_ARGUMENT).json({error:'groupId missing'});
             }
-            const response = await secaServices().deleteGroup(groupId, userId);
+            const response = await secaServices.deleteGroup(groupId, userId);
             return res.status(CODE.SUCCESS).json(response);
             }catch(error){
             console.error('Error processing the post request', error);
@@ -179,7 +179,7 @@ export default function(secaServices){
     async function deleteEvent(req, res){
         try{
             const userId = req.query.userId;
-            if(!await secaServices().isValid(userId)){
+            if(!await secaServices.isValidToken(userId)){
                 const error = UNAUTORIZED(userId);
                 return res.status(error.code).json({error: error.description});
             }
@@ -187,7 +187,7 @@ export default function(secaServices){
             const eventId = req.query.eventId;
             if (groupId == null || eventId == null)
                 return res.status(ERROR_CODES.INVALID_ARGUMENT).json({error : `groupId : ${groupId} and eventId : ${eventId} should be especified`});
-            const response = await secaServices().deleteEvent(groupId, eventId, userId);
+            const response = await secaServices.deleteEvent(groupId, eventId, userId);
             return res.status(CODE.SUCCESS).json(response);
         }catch(error){
             console.error('Error processing the post request', error);

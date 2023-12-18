@@ -11,7 +11,12 @@ export default function (indexName){
         insertGroup,
         insertUser,
         deleteGroup,
-        isValid
+        isValid,
+        isValidToken
+    }
+
+    async function isValidToken(userId){
+        return get(URI_MANAGER.get(userId)).then(body => body.found)
     }
 
     async function getGroups(userId){

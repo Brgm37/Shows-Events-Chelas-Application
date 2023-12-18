@@ -31,6 +31,7 @@ export default function(usersTable, groupsTable) {
         createUser,
         editGroup,
         isValid,
+        isValidToken,
         deleteGroup,
         deleteEvent,
         addEvent,
@@ -75,7 +76,7 @@ export default function(usersTable, groupsTable) {
 
     async function allGroups(userId){
         try{
-            return await groupsTable.getGroups(userId);;
+            return await groupsTable.getGroups(userId);
         }catch(erro){
             throw errors.INTERNAL_SERVER_ERROR("allGroups", erro);
         }
@@ -116,6 +117,14 @@ export default function(usersTable, groupsTable) {
             return await groupsTable.updateGroup(groupUpdate);
         }catch(erro){
             throw errors.NOT_FOUND(groupId);
+        }
+    }
+
+    async function isValidToken(userId){
+        try {
+            return await usersTable.isValidToken(userId);
+        }catch (e) {
+            throw  errors.NOT_FOUND(userId);
         }
     }
 
