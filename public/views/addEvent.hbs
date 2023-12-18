@@ -1,19 +1,23 @@
-<header>
-    <a href="/site/home">SingOut</a>
-    <a href="/site/allGroups?userId={{userId}}">AllGroups</a>
-    <h1>Search for an Event</h1>
-    <form method="GET" action="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}">
-        <p>EventName<input type="text" {{#if eventName}} value="{{eventName}}" {{/if}} name="eventName"></p>
-        <input type="submit" value="Search Event">   
-    </form>
-    <a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}" class="button">PopularEvents</a>
+{{> header pageTitle="SECA" class="header"}}
+ <header class="headerAllGroups">
+  <a href="/site/home">Sign Out</a>
+  <a href="/site/allGroups?userId={{userId}}">All Groups</a>
+  </header>
+
+  <h3>Search for an Event</h3>
+  <form method="GET" action="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}">
+    <p>Event Name<input type="text" {{#if eventName}} value="{{eventName}}" {{/if}} name="eventName"></p>
+    <input type="submit" value="Search Event">
+  </form>
+  <a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}" class="button">Popular Events</a>
 </header>
-    {{#if (gt p 0)}}
-        <a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}/?p={{sub p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">PreviousPage</a>
-    {{/if}}
-    <a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}/?p={{add p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">NextPage</a>
+
+{{#if (gt p 0)}}
+  <a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}/?p={{sub p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">Previous Page</a>
+{{/if}}
+<a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}/?p={{add p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">Next Page</a>
+
 {{#each events}}
-            <hr>
-                {{> eventSection event=this userId=../userId groupId=../groupId}}
-            </hr>
+  <hr>
+  {{> eventSection event=this userId=../userId groupId=../groupId}}
 {{/each}}

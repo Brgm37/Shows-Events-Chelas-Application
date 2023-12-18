@@ -1,5 +1,4 @@
-
-<h1>Group Details</h1>
+{{!-- <h1>Group Details</h1>
 
 <header class="headerAllGroups">
     <a href="/site/home">SingOut</a>
@@ -30,7 +29,42 @@
             <p>Vendas: {{this.sales}}</p>
             <img src="{{this.image}}">
             {{> deleteEvent eventId = this.id userId=../userId groupId=../group.groupId}}
-            {{!-- {{> eventSection event=this}} --}}
+            
         </section>
     {{/each}}
+</section> --}}
+{{> header pageTitle="SECA" class="header"}}
+
+
+
+<header class="headerAllGroups">
+  <a href="/site/home">Sign Out</a>
+  <a> | </a>
+  <a href="/site/allGroups?userId={{userId}}">All Groups</a>
+</header>
+
+<form class="form" method="POST" action="/site/updateGroup/{{userId}}/{{group.groupId}}">
+  <p>Name: <input type="text" value="{{group.name}}" name="groupName"></p>
+  <p>Description: <input type="text" value="{{group.description}}" name="groupDescription"></p>
+  <input type="submit" value="Update Group">
+</form>
+
+<form class="form" method="POST" action='/site/groups/delete/{{userId}}/{{group.groupId}}'>
+  <input type="submit" value="Delete Group">
+</form>
+
+<form class="form" method="GET" action='/site/events/{{userId}}/{{group.groupId}}'>
+  <input type="submit" value="Add Event">
+</form>
+
+<section class="sectionMain">
+  {{#each group.events}}
+    <section class="eventSection">
+      <strong>{{this.name}}</strong>
+      <p>Data: {{this.date}}</p>
+      <p>Gênero: {{this.genre}}</p>
+      <img src="{{this.img}}">
+      {{> deleteEvent eventId=this.id userId=../userId groupId=../group.groupId}}
+    </section>
+  {{/each}}
 </section>

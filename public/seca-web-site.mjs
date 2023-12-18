@@ -5,7 +5,9 @@ import secaServices from './seca-services.mjs';
 import { groups, users} from './seca-server.mjs'; */
 
 import errors from "../common/errors.mjs";
+import url from 'url'
 
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 export default function(secaServices){
   if(!secaServices){
     throw errors.INVALID_ARGUMENT("secaServices");
@@ -24,6 +26,8 @@ export default function(secaServices){
     deleteEvent,
     dummy,
     showEvents,
+    showCss,
+
   }
 
   async function dummy(req, res){
@@ -58,6 +62,13 @@ export default function(secaServices){
         res.render('error', {code: error.code, description: error.description});
     }
   }
+
+  async function showCss(req, res){
+      const filePath = __dirname + 'style.css';
+      console.log(filePath);
+      res.sendFile(filePath);
+  }
+
 
   async function allGroups(req, res){
     try{
@@ -149,6 +160,22 @@ export default function(secaServices){
         events = await secaServices.fetchEventByName(eventName, 30, p);
       res.render('addEvent', {groupId: groupId, userId: userId, events: events, p:p, eventName: eventName});
     }catch(error){
+      res.render('error', {code: error.code, description: error.description});
+    }
+  }
+
+  async function showEvents(req, res){
+    try{
+      const eventName = req.query.eventName;
+      const p = req.query.p || 0;
+      let events;
+      if(!eventName)
+        events = await secaServices.fetchPopularEvents(30, p);
+      else
+        events = await secaServices.fetchEventByName(eventName, 30, p);
+      res.render('showEvent', {events: events, p:p, eventName: eventName});
+    }catch(error){
+      console.error(error);
       res.render('error', {code: error.code, description: error.description});
     }
   }

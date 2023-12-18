@@ -62,6 +62,9 @@ app.post('/site/groups/addEvent/:userId/:groupId/:eventId', secaSite.addEvent);
 app.post('/site/groups/event/delete/:userId/:groupId/:eventId', secaSite.deleteEvent);
 app.post('/', secaSite.dummy);
 app.get('/site/events/search', secaSite.showEvents);
+app.get('/site/css', secaSite.showCss);
+app.post('/', secaSite.dummy);
+app.get('/site/events/search', secaSite.showEvents);
 
 //Api route
 app.get('/api/events/popular', secaApi.getPopularEvents);          
