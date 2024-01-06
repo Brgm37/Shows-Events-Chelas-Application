@@ -1,15 +1,17 @@
 {{> header pageTitle="SECA" class="header"}}
 
 <header class="headerAllGroups">
-    <a href="./home">Sign Out</a>
+    <form method="POST" action="/site/signOut">
+        <input type="submit" value="Sign Out">
+    </form>
 </header>
 
-<div class="createGroupDiv">{{> newGroup userId=userId }}</div>
+<div class="createGroupDiv">{{> newGroup }}</div>
 
 <hr>
 
 <section class="sectionMain">
     {{#each groups}}
-      {{> groupSection userId=userId group=this}}
+      {{> groupSection group=this}}
     {{/each}}
 </section>

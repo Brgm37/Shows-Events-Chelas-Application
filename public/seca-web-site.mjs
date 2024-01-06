@@ -1,9 +1,3 @@
-//seca-web-site.mjs
-/* import express from 'express';
-import crypto from 'crypto';
-import secaServices from './seca-services.mjs';
-import { groups, users} from './seca-server.mjs'; */
-
 import errors from "../common/errors.mjs";
 import url from 'url'
 
@@ -27,12 +21,23 @@ export default function(secaServices){
     dummy,
     showEvents,
     showCss,
-
+    verifyAuthenticated,
+    signOut
   }
 
+  async function signOut(req, res){
+    req.logout((err) => res.redirect('/site/home'));
+  }
+
+  async function verifyAuthenticated(req, res, next){
+      if(req.user)
+        return next();
+      else
+        res.redirect('/site/home');
+  }
   async function dummy(req, res){
     try{
-      const id = await secaServices.dummy();
+      const id = secaServices.dummy();
       res.status(200).json(id);
     }catch(error){
       console.log(error)
@@ -50,11 +55,12 @@ export default function(secaServices){
 
   async function singIn(req, res){
     try{
-      const userName = req.query.userName;
-      const password = req.query.password;
+      const userName = req.body.userName;
+      const password = req.body.password;
       const userId = await secaServices.isValid(userName, password);
       if(userId){
-        res.redirect(`/site/allGroups?userId=${userId}`);
+        req.login(userId, () => res.redirect(`/site/auth/home`));
+        // res.redirect(`/site/allGroups?userId=${userId}`);
       }else{
         res.redirect('/site/home');
       }
@@ -68,11 +74,9 @@ export default function(secaServices){
       res.sendFile(filePath);
   }
 
-
   async function allGroups(req, res){
     try{
-      const userId = req.query.userId;
-      console.log(userId);
+      const userId = req.user;
       const groups = await secaServices.allGroups(userId);
       res.render('allGroups', {groups: groups, userId: userId});
     }catch(error){
@@ -89,7 +93,8 @@ export default function(secaServices){
         res.redirect('/site/home');
       }else{
         const newUserId = await secaServices.createUser(newUserName, newPassword);
-        res.redirect(`/site/allGroups?userId=${newUserId}`);
+        req.login(newUserId, () => res.redirect(`/site/auth/home`));
+        // res.redirect(`/site/allGroups?userId=${newUserId}`);
       }
     }catch(error){
       console.log(error);
@@ -99,11 +104,11 @@ export default function(secaServices){
 
   async function createGroup(req, res){
     try{
-      const userId = req.query.userId;
+      const userId = req.user;
       const name = req.body.name;
       const description = req.body.description;
       await secaServices.createGroup(name, description, userId);
-      res.redirect(`/site/allGroups?userId=${userId}`);
+      res.redirect(`/site/auth/home`);
     }catch(error){
       console.log(error);
       res.render('error', {code: error.code, description: error.description});
@@ -115,7 +120,6 @@ export default function(secaServices){
       const groupId = req.params.groupId;
       const userId = req.params.userId;
       const group = await secaServices.getGroup(groupId, userId);
-      console.log(group);
       res.render('details', {group: group, userId: userId})
     }catch(error){
       res.render('error', {code: error.code, description: error.description});
@@ -128,7 +132,7 @@ export default function(secaServices){
       const groupId = req.params.groupId;
       const name = req.body.groupName;
       const description = req.body.groupDescription;
-      await secaServices.editGroup(groupId, name, description, userId);
+      secaServices.editGroup(groupId, name, description, userId);
       res.redirect(`/site/details/${userId}/${groupId}`);
     }catch(error){
       res.render('error', {code: error.code, description: error.description});
@@ -181,14 +185,10 @@ export default function(secaServices){
 
   async function addEvent(req, res){
     try{
-      console.log();
       const userId = req.params.userId;
       const groupId = req.params.groupId;
       const eventId = req.params.eventId;
-      console.log(`userId: ${userId}`);
-      console.log(`groupId: ${groupId}`);
-      console.log(`eventId: ${eventId}`);
-      await secaServices.addEvent(groupId, userId, eventId);
+      secaServices.addEvent(groupId, userId, eventId);
       res.redirect(`/site/events/${userId}/${groupId}`);
     }catch(error){
       console.log(error);

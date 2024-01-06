@@ -35,7 +35,6 @@ export default function(usersTable, groupsTable) {
         deleteGroup,
         deleteEvent,
         addEvent,
-        signIn,
         signUp,
         dummy
     }
@@ -43,25 +42,25 @@ export default function(usersTable, groupsTable) {
     async function fetchEventById(eventId){
         try{
             return await tmEventsData.fetchEventById(eventId);
-        }catch(erro){
-            console.log(erro);
-            throw errors.INTERNAL_SERVER_ERROR("fetchEventById", erro);
+        }catch(error){
+            console.log(error);
+            throw errors.INTERNAL_SERVER_ERROR("fetchEventById", error);
         }
     }
 
     async function fetchPopularEvents(s, p){
         try{
             return await tmEventsData.fetchPopularEvent(s, p)
-        }catch(erro){
-            throw errors.INTERNAL_SERVER_ERROR("fetchPopularEvents", erro);
+        }catch(error){
+            throw errors.INTERNAL_SERVER_ERROR("fetchPopularEvents", error);
         }
     }
 
     async function fetchEventByName(eventName, s, p){
         try{
             return await tmEventsData.fetchEventByName(eventName, s, p);
-        }catch(erro){
-            throw errors.INTERNAL_SERVER_ERROR("fetchEventByName", erro);
+        }catch(error){
+            throw errors.INTERNAL_SERVER_ERROR("fetchEventByName", error);
         }
     }    
     
@@ -69,23 +68,22 @@ export default function(usersTable, groupsTable) {
         try{
             const newGroup = new Group(name, description, userId);
             return await groupsTable.insertGroup(newGroup);           //POR DEFAULT JÁ TEM O INDEXGROUP
-        }catch(erro){
-            throw errors.INTERNAL_SERVER_ERROR("createGroup", erro);
+        }catch(error){
+            throw errors.INTERNAL_SERVER_ERROR("createGroup", error);
         }     
     }
 
     async function allGroups(userId){
         try{
             return await groupsTable.getGroups(userId);
-        }catch(erro){
-            throw errors.INTERNAL_SERVER_ERROR("allGroups", erro);
+        }catch(error){
+            throw errors.INTERNAL_SERVER_ERROR("allGroups", error);
         }
     }
 
     async function getGroup(groupId, userId){
         try{
             const group = await groupsTable.getGroup(groupId);
-            console.log(group);
             if (group.userId == userId)
                 return group;
             else
@@ -100,8 +98,8 @@ export default function(usersTable, groupsTable) {
         try{
             const newUser = new User(userName, password);
             return await usersTable.insertUser(newUser);
-        }catch(erro){
-            throw errors.INTERNAL_SERVER_ERROR("createUser", erro);
+        }catch(error){
+            throw errors.INTERNAL_SERVER_ERROR("createUser", error);
         }
     }
 
@@ -115,7 +113,7 @@ export default function(usersTable, groupsTable) {
             if (newDescription != null);
                 groupUpdate.description = newDescription;
             return await groupsTable.updateGroup(groupUpdate);
-        }catch(erro){
+        }catch(error){
             throw errors.NOT_FOUND(groupId);
         }
     }
@@ -130,11 +128,9 @@ export default function(usersTable, groupsTable) {
 
     async function isValid(userName, password) {
         try{
-            console.log(userName);
-            console.log(password);
             return await usersTable.isValid(userName, password);
-        }catch(erro){
-            throw erro.INTERNAL_SERVER_ERROR(userName)
+        }catch(error){
+            throw error.INTERNAL_SERVER_ERROR(userName)
         }
     }
 
@@ -144,21 +140,24 @@ export default function(usersTable, groupsTable) {
             if (group.userId != userId)
                 throw errors.NOT_AUTHORIZED(userId, groupId);
         return await groupsTable.deleteGroup(group.groupId);
-        }catch(erro){
+        }catch(error){
             throw errors.NOT_FOUND(groupId);
         }
     }
 
-    async function deleteEvent(groupId, eventId, userId){
-        try{
+    async function deleteEvent(groupId, eventId, userId) {
+        try {
             const groupUpdate = await groupsTable.getGroup(groupId);
-            if (groupUpdate.userId != userId)
+            if (groupUpdate.userId !== userId) {
                 throw errors.NOT_AUTHORIZED(userId, groupId);
-            if (!groupUpdate.events.map(it => it.id).includes(eventId))
+            }
+            const eventIndex = groupUpdate.events.findIndex(event => event.id === eventId);
+            if (eventIndex === -1) {
                 throw errors.NOT_FOUND(eventId);
-            groupUpdate.events = groupUpdate.events.filter(event => event.id != eventId);
+            }
+            groupUpdate.events.splice(eventIndex, 1);
             return await groupsTable.updateGroup(groupUpdate);
-        }catch(error){
+        } catch (error) {
             throw error.NOT_FOUND(groupId);
         }
     }
@@ -172,21 +171,8 @@ export default function(usersTable, groupsTable) {
             groupUpdate.events.push(event);
             console.log(groupUpdate);
             return await groupsTable.updateGroup(groupUpdate);
-        }catch(erro){
+        }catch(error){
             throw errors.NOT_FOUND(groupId);
-        }
-    }
-
-    async function signIn(userName, password){
-        try{
-            const user = await usersTable.isValid(userName, password);
-
-            if (user.token == undefined)
-                return false;
-            else
-                return user;
-        }catch(erro){
-            throw errors.NOT_FOUND(userName);
         }
     }
 
@@ -197,8 +183,8 @@ export default function(usersTable, groupsTable) {
                 return await usersTable.insertUser(new User(userName, password));
             else
                 return false;
-        }catch(erro){
-            throw errors.INTERNAL_SERVER_ERROR(erro);
+        }catch(error){
+            throw errors.INTERNAL_SERVER_ERROR(error);
         }
     }
     async function dummy(){

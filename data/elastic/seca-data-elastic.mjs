@@ -69,14 +69,13 @@ export default function (indexName){
                                 "password":password
                             }
                         }
-
                     ]
                 }
             }
         };
        return post(URI_MANAGER.getAll(), query).then(body => {
         const usert = body.hits.hits;
-        if (usert.length == 0){
+        if (usert.length === 0){
             return undefined;
         }else{
             return usert[0]._id; 

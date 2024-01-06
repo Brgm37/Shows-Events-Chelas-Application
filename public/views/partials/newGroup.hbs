@@ -1,9 +1,9 @@
 <h3>Create a new Group</h3>
-<form method="POST" action="insertGroup?userId={{userId}}">
+<form method="POST" action="insertGroup">
 
     <p>Name: <input type="text" name="name" maxlength="15"></p>
 
-    <p>Description: <input type="text" value="{{group.description}}" name="description" maxlength="80"></p>
+    <p>Description: <input type="text" name="description" maxlength="80"></p>
     
     <button type="submit">Save Group</button>
 </form>
