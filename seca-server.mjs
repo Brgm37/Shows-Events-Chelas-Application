@@ -92,16 +92,18 @@ app.post('/site/signIn', secaSite.singIn);
 app.get('/site/auth/home', secaSite.allGroups);
 app.post('/site/signUp', secaSite.signUp);
 app.post('/site/auth/home/insertGroup', secaSite.createGroup);
-app.post('/site/auth/home/showDetails', secaSite.showDetails);
+app.get('/site/auth/home/showDetails', secaSite.showDetails);
+app.get('/site/css', secaSite.showCss);
+app.post('/', secaSite.dummy);
+app.post('/site/signOut', secaSite.signOut);
+
 app.post('/site/updateGroup/:userId/:groupId', secaSite.updateGroup);
 app.post('/site/groups/delete/:userId/:groupId', secaSite.deleteGroup);
 app.get('/site/events/:userId/:groupId', secaSite.showEvent);
 app.post('/site/groups/addEvent/:userId/:groupId/:eventId', secaSite.addEvent);
 app.post('/site/groups/event/delete/:userId/:groupId/:eventId', secaSite.deleteEvent);
-app.post('/', secaSite.dummy);
-app.post('/site/signOut', secaSite.signOut)
 app.get('/site/events/search', secaSite.showEvents);
-app.get('/site/css', secaSite.showCss);
+
 
 //Api route
 app.get('/api/events/popular', secaApi.getPopularEvents);

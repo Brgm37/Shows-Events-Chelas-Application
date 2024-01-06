@@ -52,7 +52,6 @@ export default function(secaServices){
       res.render('error', {code: errors.INTERNAL_SERVER_ERROR, description:'Internal Server Error'});
     }
   }
-
   async function singIn(req, res){
     try{
       const userName = req.body.userName;
@@ -117,8 +116,8 @@ export default function(secaServices){
 
   async function showDetails(req, res){
     try{
-      const groupId = req.params.groupId;
-      const userId = req.params.userId;
+      const groupId = req.query.groupId;
+      const userId = req.user;
       const group = await secaServices.getGroup(groupId, userId);
       res.render('details', {group: group, userId: userId})
     }catch(error){
