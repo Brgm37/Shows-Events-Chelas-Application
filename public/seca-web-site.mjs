@@ -143,7 +143,7 @@ export default function(secaServices){
       const userId = req.user;
       const groupId = req.body.groupId;
       await secaServices.deleteGroup(groupId, userId);
-      res.redirect('site/auth/home')
+      res.redirect('/site/auth/home')
     }catch(error){
       res.render('error', {code: error.code, description: error.description});
     }

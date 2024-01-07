@@ -7,7 +7,6 @@ import hbs from 'hbs';
 import passport from 'passport';
 import expressSession from 'express-session';
 
-
 import secaWebInit from './public/seca-web-site.mjs';
 import secaApiInit from './seca-web-api.mjs';
 import secaDataElasticInit from './data/elastic/seca-data-elastic.mjs';
@@ -23,13 +22,11 @@ const secaApi = secaApiInit(secaServices);
 const secaSite = secaWebInit(secaServices);
 
 const port = 3000;
-
 const currentFileDir = url.fileURLToPath(new URL('.', import.meta.url));
-
 const app = express();
 
-app.use(expressSession({secret: 'group_30', resave: false, saveUninitialized: false}));
 
+app.use(expressSession({secret: 'group_30', resave: false, saveUninitialized: false}));
 app.use(morgan('dev'));
 app.use(express.static(`${currentFileDir}/public`, { type: 'text/css' }));
 app.use(cors());
@@ -40,7 +37,6 @@ app.use(passport.initialize());
 
 passport.serializeUser(serializeUserDeserializeUser);
 passport.deserializeUser(serializeUserDeserializeUser);
-
 function serializeUserDeserializeUser (user, done) {
     done(null, user)
 }
@@ -66,27 +62,6 @@ hbs.registerHelper('lt', function (a, b){
 hbs.registerHelper('gt', function(a, b){
     return Number(a) > Number(b);
 });
-
-/*
-* LOGIN
-* para fazer login GET
-*
-* validar o login POST
-*
-* REGISTER
-*
-* para fazer signUp GET
-*
-* para registar a informação
-*
-* logout tem de ser com post
-* */
-
-
-
-// //app.get("/site/home", homeNotAuthenticaded);
-//
-// app.get("/site/auth/home", homeAuthenticaded);
 
 //Site route
 app.use("/site/auth", secaSite.verifyAuthenticated);
