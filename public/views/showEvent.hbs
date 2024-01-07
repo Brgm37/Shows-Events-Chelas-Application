@@ -7,19 +7,21 @@
     <h3>Search Events</h3>
 
     <div class="container">
-    <form method="GET" action="/site/events/search">
+    <form method="GET" action="/site/home/showEvents">
         <p>Find events:<input type="text" {{#if eventName}} value="{{eventName}}" {{/if}} name="eventName"></p>
         <button type="submit">Search</button>
     </form>
     </div>
 
     <div class="page-buttons">
-  <a href="/site/events/search{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}" class="button">Popular Events</a>
+  <a href="/site/home/showEvents{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}" class="button">Popular Events</a>
   <div class="pagination-buttons">
     {{#if (gt p 0)}}
-      <a href="/site/events/search{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}/?p={{sub p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">Previous Page</a>
+      <a href="/site/home/showEvents{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}/?p={{sub p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">Previous Page</a>
     {{/if}}
-    <a href="/site/events/search{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}/?p={{add p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">Next Page</a>
+      {{#if (lt p 5)}}
+          <a href="/site/home/showEvents{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}/?p={{add p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">Next Page</a>
+      {{/if}}
   </div>
 </div>
 {{#each events}}

@@ -99,6 +99,10 @@ button:hover {
   text-align: center;
 }
 
+.headerAllGroups form {
+  display: inline-block;
+}
+
 .headerAllGroups a {
   color: #fff;
   text-decoration: none;
@@ -113,6 +117,11 @@ button:hover {
   margin: 0;
   cursor: pointer;
   text-decoration: none;
+}
+
+.headerAllGroups span {
+  color: #fff;
+  margin: 0 5px;
 }
 
 .createGroupDiv {
@@ -256,9 +265,6 @@ hr {
 }
 
 
-
-
-
 .add-event-form {
   max-width: 400px;
   margin: 20px auto;
@@ -332,7 +338,6 @@ hr {
 
 .page-buttons .pagination-buttons {
   display: flex;
-  justify-content: space-between;
   margin-top: 10px;
 }
 
@@ -348,5 +353,30 @@ hr {
   background-color: #45a049;
 }
 
+/*.page-buttons input[type="submit"],*/
+/*.page-buttons a {*/
+/*  display: inline-block;*/
+/*  padding: 10px 15px;*/
+/*  margin: 0 5px;*/
+/*  text-decoration: none;*/
+/*  color: #333;*/
+/*  border-radius: 4px;*/
+/*  transition: background-color 0.3s ease;*/
+/*}*/
+
+/*.page-buttons input[type="submit"].button,*/
+/*.page-buttons a.button {*/
+/*  background-color: #4caf50;*/
+/*}*/
+
+/*.page-buttons .pagination-buttons {*/
+/*  display: flex;*/
+/*  justify-content: space-between;*/
+/*  margin-top: 10px;*/
+/*}*/
+
+/*.page-buttons .pagination-buttons input[type="submit"] {*/
+/*  flex-grow: 1;*/
+/*}*/
 
 

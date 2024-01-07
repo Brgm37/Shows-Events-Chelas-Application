@@ -1,3 +1,5 @@
-<form method="POST" action="/site/groups/event/delete/{{userId}}/{{groupId}}/{{eventId}}">
+<form method="POST" action="/site/auth/home/showEvents/delete">
+    <input type="hidden" value="{{groupId}}" name="groupId">
+    <input type="hidden" value="{{eventId}}" name="eventId">
     <input type="submit" value="Delete">
 </form>

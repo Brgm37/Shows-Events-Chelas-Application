@@ -130,7 +130,7 @@ export default function(usersTable, groupsTable) {
         try{
             return await usersTable.isValid(userName, password);
         }catch(error){
-            throw error.INTERNAL_SERVER_ERROR(userName)
+            throw errors.INTERNAL_SERVER_ERROR(error)
         }
     }
 
@@ -169,7 +169,6 @@ export default function(usersTable, groupsTable) {
             if(groupUpdate.userId != userId)
                 throw errors.NOT_AUTHORIZED(eventId, groupId);
             groupUpdate.events.push(event);
-            console.log(groupUpdate);
             return await groupsTable.updateGroup(groupUpdate);
         }catch(error){
             throw errors.NOT_FOUND(groupId);

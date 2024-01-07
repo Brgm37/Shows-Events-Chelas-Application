@@ -60,6 +60,9 @@ hbs.registerHelper('add', function(a, b){
 hbs.registerHelper('sub', function(a, b){
     return Number(a)-Number(b);
 });
+hbs.registerHelper('lt', function (a, b){
+   return Number(a) < Number(b);
+});
 hbs.registerHelper('gt', function(a, b){
     return Number(a) > Number(b);
 });
@@ -96,14 +99,12 @@ app.get('/site/auth/home/showDetails', secaSite.showDetails);
 app.get('/site/css', secaSite.showCss);
 app.post('/', secaSite.dummy);
 app.post('/site/signOut', secaSite.signOut);
-
-app.post('/site/updateGroup/:userId/:groupId', secaSite.updateGroup);
-app.post('/site/groups/delete/:userId/:groupId', secaSite.deleteGroup);
-app.get('/site/events/:userId/:groupId', secaSite.showEvent);
-app.post('/site/groups/addEvent/:userId/:groupId/:eventId', secaSite.addEvent);
-app.post('/site/groups/event/delete/:userId/:groupId/:eventId', secaSite.deleteEvent);
-app.get('/site/events/search', secaSite.showEvents);
-
+app.post('/site/auth/home/update', secaSite.updateGroup);
+app.post('/site/auth/home/delete', secaSite.deleteGroup);
+app.get('/site/auth/home/showEvents' , secaSite.showEvents);
+app.post('/site/auth/home/showEvents/delete', secaSite.deleteEvent);
+app.post('/site/auth/home/showEvents/add', secaSite.addEvent);
+app.get('/site/home/showEvents', secaSite.showEventsWithOutUser);
 
 //Api route
 app.get('/api/events/popular', secaApi.getPopularEvents);

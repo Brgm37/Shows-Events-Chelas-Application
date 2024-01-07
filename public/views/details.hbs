@@ -1,29 +1,36 @@
 {{> header pageTitle="SECA" class="header"}}
 <header class="headerAllGroups">
-  <a href="/site/home">Sign Out</a>
-  <a> | </a>
-  <a href="/site/allGroups?userId={{userId}}">All Groups</a>
+    <form method="POST" action="/site/signOut">
+        <input type="submit" value="Sign Out">
+    </form>
+    <span> | </span>
+    <form method = "GET" action = "/site/auth/home">
+        <input type="submit" value="All Groups">
+    </form>
 </header>
 
-<form class="container" method="POST" action="/site/updateGroup/{{userId}}/{{group.groupId}}">
+
+<form class="container" method="POST" action="/site/auth/home/update">
   <h3>Update Group</h3>
   <p>Name: <input type="text" value="{{group.name}}" name="groupName" maxlength="15"></p>
   <p>Description: <input type="text" value="{{group.description}}" name="groupDescription" maxlength="80"></p>
-  <button type="submit">Update</button>
+    <input type="hidden" value="{{group.groupId}}" name="groupId">
+    <button type="submit">Update</button>
 </form>
 
 <hr>
 
 <div class="details-buttons">
-<form  method="POST" action='/site/groups/delete/{{userId}}/{{group.groupId}}'>
+<form  method="POST" action='/site/auth/home/delete'>
+    <input type="hidden" value="{{group.groupId}}" name="groupId">
   <input type="submit" value="Delete Group">
 </form>
 
-<form  method="GET" action='/site/events/{{userId}}/{{group.groupId}}'>
+<form  method="GET" action='/site/auth/home/showEvents'>
+    <input type="hidden" value="{{group.groupId}}" name="groupId">
   <input type="submit" value="Add Event">
 </form>
 </div>
-
 <section class="sectionMain">
   {{#each group.events}}
     <section class="add-event-form">

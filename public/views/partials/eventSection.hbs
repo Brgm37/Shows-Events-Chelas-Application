@@ -1,21 +1,17 @@
-<form class="add-event-form" method="POST" action="/site/groups/addEvent/{{userId}}/{{groupId}}/{{event.id}}">
+<form class="add-event-form" method="POST" action="/site/auth/home/showEvents/add">
+    <input type="hidden" value="{{groupId}}" name="groupId">
     <input type="hidden" name="eventId" value="{{this.id}}">
+    <input type="hidden" name="eventName" value="{{eventName}}">
+    <input type="hidden" name="p" value="{{p}}">
     <h3>{{this.name}}</h3>
-    <input type="hidden" name="eventName" value="{{this.name}}">
     <p>Data: {{this.date}}</p>
-    <input type="hidden" name="eventDate" value="{{this.date}}">
     <p>Vendas: {{this.sales}}</p>
-    <input type="hidden" name="eventSales" value="{{this.sales}}">
     <p>Gênero: {{this.genre}}</p>
-    <input type="hidden" name="eventGenre" value="{{this.genre}}">
     <p>Sub-Gênero: {{this.subGenre}}</p>
-    <input type="hidden" name="eventSubGenre" value="{{this.subGenre}}">
     <p>Segmento: {{this.segment}}</p>
-    <input type="hidden" name="eventSegment" value="{{this.segment}}">
     <div class="event-image-container">
         <img src="{{this.image}}" alt="" class="event-image">
     </div>
-    <input type="hidden" name="image" value="{{this.image}}">
     <div class="add-to-group-container">
         <input type="submit" value="Add to Group">
     </div>

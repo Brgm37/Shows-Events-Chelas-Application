@@ -1,30 +1,36 @@
 {{> header pageTitle="SECA" class="header"}}
  <header class="headerAllGroups">
-  <a href="/site/home">Sign Out</a>
-  <a href="/site/home"> | </a>
-  <a href="/site/allGroups?userId={{userId}}">All Groups</a>
+     <form method="POST" action="/site/signOut">
+         <input type="submit" value="Sign Out">
+     </form>
+     <span> | </span>
+     <form method = "GET" action = "/site/auth/home">
+         <input type="submit" value="All Groups">
+     </form>
   </header>
 
   <h3>Search for an Event</h3>
   <div class="container">
-  <form method="GET" action="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}">
+  <form method="GET" action="/site/auth/home/showEvents">
+      <input type="hidden" value="{{groupId}}" name="groupId">
     <p>Search in events:<input type="text" {{#if eventName}} value="{{eventName}}" {{/if}} name="eventName"></p>
     <button type="submit">Search</button>
   </form>
   </div>
-</header>
 
 <div class="page-buttons">
-  <a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}" class="button">Popular Events</a>
-  <div class="pagination-buttons">
-    {{#if (gt p 0)}}
-      <a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}/?p={{sub p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">Previous Page</a>
-    {{/if}}
-    <a href="/site/events{{#if userId}}/{{userId}}{{/if}}{{#if groupId}}/{{groupId}}{{/if}}/?p={{add p 1}}{{#if eventName}}&eventName={{eventName}}{{/if}}" class="btn-primary">Next Page</a>
-  </div>
+    <a href="/site/auth/home/showEvents?groupId={{group.groupId}}" class="button">Popular Events</a>
+    <div class="pagination-buttons">
+      {{#if (gt p 0)}}
+          <a href="/site/auth/home/showEvents?groupId={{groupId}}&p={{sub p 1}}&eventName={{eventName}}" class="btn-primary">Previous Page</a>
+      {{/if}}
+      {{#if (lt p 5)}}
+          <a href="/site/auth/home/showEvents?groupId={{groupId}}&p={{add p 1}}&eventName={{eventName}}" class="btn-primary">Next Page</a>
+      {{/if}}
+    </div>
 </div>
 
 {{#each events}}
   <hr>
-  {{> eventSection event=this userId=../userId groupId=../groupId}}
+  {{> eventSection event=this groupId= ../groupId p = ../p eventName= ../eventName}}
 {{/each}}

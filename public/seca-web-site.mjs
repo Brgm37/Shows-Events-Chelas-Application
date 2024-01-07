@@ -15,11 +15,11 @@ export default function(secaServices){
     showDetails,
     updateGroup,
     deleteGroup,
-    showEvent,
+    showEvents,
     addEvent,
     deleteEvent,
     dummy,
-    showEvents,
+    showEventsWithOutUser,
     showCss,
     verifyAuthenticated,
     signOut
@@ -49,7 +49,7 @@ export default function(secaServices){
     try{
       res.render('home');
     }catch(error){
-      res.render('error', {code: errors.INTERNAL_SERVER_ERROR, description:'Internal Server Error'});
+      res.render('error', {code: errors.INTERNAL_SERVER_ERROR(error).code, description:'Internal Server Error'});
     }
   }
   async function singIn(req, res){
@@ -64,7 +64,7 @@ export default function(secaServices){
         res.redirect('/site/home');
       }
     }catch(error){
-        res.render('error', {code: error.code, description: error.description});
+      res.render('error', {code: error.code, description: error.description});
     }
   }
 
@@ -127,12 +127,12 @@ export default function(secaServices){
 
   async function updateGroup(req, res){
     try{
-      const userId = req.params.userId;
-      const groupId = req.params.groupId;
+      const userId = req.user;
+      const groupId = req.body.groupId;
       const name = req.body.groupName;
       const description = req.body.groupDescription;
-      secaServices.editGroup(groupId, name, description, userId);
-      res.redirect(`/site/details/${userId}/${groupId}`);
+      await secaServices.editGroup(groupId, name, description, userId);
+      res.redirect(`/site/auth/home/showDetails?groupId=${groupId}`);
     }catch(error){
       res.render('error', {code: error.code, description: error.description});
     }
@@ -140,19 +140,19 @@ export default function(secaServices){
   
   async function deleteGroup(req, res){
     try{
-      const userId = req.params.userId;
-      const groupId = req.params.groupId;
+      const userId = req.user;
+      const groupId = req.body.groupId;
       await secaServices.deleteGroup(groupId, userId);
-      res.redirect(`/site/allGroups?userId=${userId}`)
+      res.redirect('site/auth/home')
     }catch(error){
       res.render('error', {code: error.code, description: error.description});
     }
   }
 
-  async function showEvent(req, res){
+  async function showEvents(req, res){
     try{
-      const userId = req.params.userId;
-      const groupId = req.params.groupId;
+      const userId = req.user;
+      const groupId = req.query.groupId;
       const eventName = req.query.eventName;
       const p = req.query.p || 0;
       let events;
@@ -166,7 +166,7 @@ export default function(secaServices){
     }
   }
 
-  async function showEvents(req, res){
+  async function showEventsWithOutUser(req, res){
     try{
       const eventName = req.query.eventName;
       const p = req.query.p || 0;
@@ -184,11 +184,13 @@ export default function(secaServices){
 
   async function addEvent(req, res){
     try{
-      const userId = req.params.userId;
-      const groupId = req.params.groupId;
-      const eventId = req.params.eventId;
+      const userId = req.user;
+      const groupId = req.body.groupId;
+      const eventId = req.body.eventId;
+      const p = req.body.p;
+      const eventName = req.body.eventName;
       secaServices.addEvent(groupId, userId, eventId);
-      res.redirect(`/site/events/${userId}/${groupId}`);
+      res.redirect(`/site/auth/home/showEvents?groupId=${groupId}&p=${p}&eventName=${eventName}`);
     }catch(error){
       console.log(error);
       res.render('error', {code: error.code, description: error.description});
@@ -197,11 +199,11 @@ export default function(secaServices){
 
   async function deleteEvent(req, res){
     try{
-      const userId = req.params.userId;
-      const groupId = req.params.groupId;
-      const eventId = req.params.eventId;
+      const userId = req.user;
+      const groupId = req.body.groupId;
+      const eventId = req.body.eventId;
       await secaServices.deleteEvent(groupId, eventId, userId);
-      res.redirect(`/site/details/${userId}/${groupId}`);
+      await res.redirect(`/site/auth/home/showDetails?groupId=${groupId}`);
     }catch(error){
       res.render('error', {code: error.code, description: error.description});
     }
